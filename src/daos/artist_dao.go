@@ -2,47 +2,36 @@ package daos
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"log"
+	"os"
+
+	_ "github.com/lib/pq"
+	"github.com/jmoiron/sqlx"
 )
 
 //TODO - environmentalize
 var (
-	dbUsername         = "secret"
-	dbPassword         = "secret"
-	dbHost             = "secret"
-	dbTable            = "secret"
-	dbPort             = "secret"
-	dbConnectionString = fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUsername, dbTable, dbPassword)
+	dbTable            = os.Getenv("ARTISTS_TABLE")
 )
 
-type ArtistDao struct {
-	db *sqlx.DB
+type ArtistsDao struct {
+	artists *sqlx.DB
 }
 
-var schema = fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s 
-	(
-		id SERIAL PRIMARY KEY,
-		name TEXT,
-		created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-		updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-	)
-`, dbTable)
-
-func (d *ArtistDao) Open() error {
-	pg, err := sqlx.Open(dbTable, dbConnectionString)
+func (d *ArtistsDao) Open() error {
+	dbConnectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUsername, dbName, dbPassword)
+	pg, err := sqlx.Connect("postgres", dbConnectionString)
 	if err != nil {
 		return err
 	}
 	log.Printf("Connected to database - %s", dbTable)
 
-	pg.MustExec(schema)
+	pg.MustExec(ArtistsSchema)
 
-	d.db = pg
+	d.artists = pg
 	return nil
 }
 
-func (d *ArtistDao) Close() error {
-	return d.db.Close()
+func (d *ArtistsDao) Close() error {
+	return d.artists.Close()
 }

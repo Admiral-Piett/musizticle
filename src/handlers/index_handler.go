@@ -5,7 +5,11 @@ import (
 	"net/http"
 )
 
-func IndexHandler() http.HandlerFunc {
+type IndexHandler struct {
+
+}
+
+func (h *IndexHandler) Index() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello there big boy")
 	}

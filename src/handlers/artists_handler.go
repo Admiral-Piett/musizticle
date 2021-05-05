@@ -7,22 +7,27 @@ import (
 	"net/http"
 )
 
-func Artists() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "GET":
-			getArtists(w, r)
-		case "POST":
-			postArtists(w, r)
-		}
-	}
+type ArtistHandler struct {
+	ArtistsDao *daos.ArtistsDao
 }
 
 type Artist struct {
 	Name string `json:"name"`
 }
 
-func postArtists(w http.ResponseWriter, r *http.Request) {
+// HTTP Method Router
+func (h *ArtistHandler) Artists() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			h.getArtists(w, r)
+		case "POST":
+			h.postArtists(w, r)
+		}
+	}
+}
+
+func (h *ArtistHandler) postArtists(w http.ResponseWriter, r *http.Request) {
 	req := Artist{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Printf("ERROR - %s", err)
@@ -34,18 +39,10 @@ func postArtists(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid Request", http.StatusBadRequest)
 		return
 	}
-	artistsTable := daos.ArtistDao{}
-	//FIXME - this isn't working
-	err := artistsTable.Open()
-	if err != nil {
-		log.Printf("ERROR - Cannot connect to database: `%s`", err)
-		http.Error(w, "Internl server error", http.StatusInternalServerError)
-		return
-	}
-	defer artistsTable.Close()
+	//TODO - add artist to postgres via h.ArtistsDao.artists
 	return
 }
 
-func getArtists(w http.ResponseWriter, r *http.Request) {
+func (h *ArtistHandler) getArtists(w http.ResponseWriter, r *http.Request) {
 
 }
