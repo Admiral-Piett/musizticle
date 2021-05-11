@@ -8,7 +8,7 @@ import (
 )
 
 type ArtistHandler struct {
-	ArtistsDao *daos.ArtistsDao
+	Dao *daos.Dao
 }
 
 type Artist struct {

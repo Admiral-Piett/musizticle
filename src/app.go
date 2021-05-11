@@ -12,8 +12,8 @@ type App struct {
 }
 
 func New() *App {
-	appDaos := daos.InitializeDaos()
-	defer appDaos.CloseAllDaos()
+	appDaos := daos.InitializeDao()
+	defer appDaos.CloseDao()
 	appHandlers := handlers.InitializeHandlers(appDaos)
 
 	a := &App{
