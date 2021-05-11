@@ -9,13 +9,16 @@ type Handlers struct {
 	ArtistsHandler *ArtistHandler
 }
 
-func InitializeHandlers(daos *daos.Daos) *Handlers {
+func InitializeHandlers(dao *daos.Dao) *Handlers {
 	//FIXME - Should maybe let the app method do this?
 	handlers := &Handlers{
+
 		IndexHandler: &IndexHandler{},
 		ArtistsHandler: &ArtistHandler{
-			ArtistsDao: daos.ArtistsDao,
+			Dao: dao,
 		},
 	}
 	return handlers
 }
+
+
