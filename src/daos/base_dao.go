@@ -11,11 +11,12 @@ import (
 
 type Dao struct {
 	DBConn     *sql.DB
-	ArtistsTable string
 }
 
 var schemas = map[string]string{
-	os.Getenv("ARTISTS_TABLE"): ArtistsSchema,
+	"albums": AlbumnSchema,
+	"artists": ArtistsSchema,
+	"songs": SongsSchema,
 }
 
 func InitializeDao() *Dao {
@@ -28,7 +29,6 @@ func InitializeDao() *Dao {
 	}
 	dao := &Dao{
 		DBConn: db,
-		ArtistsTable: os.Getenv("ARTISTS_TABLE"),
 	}
 	dao.setupTables()
 	return dao
@@ -50,8 +50,10 @@ func (d *Dao) setupTables() {
 }
 
 func (d *Dao) setDatetimeTriggers(table string) {
+	//TODO - re-enable
+	return
 	// Add auto-lastModifiedAt on row UPDATE
-	trigger := fmt.Sprintf(LastModifiedAtUpdateTrigger, table, table)
+	trigger := fmt.Sprintf(LastModifiedAtUpdateTrigger, table, table, table)
 	stmt, err := d.DBConn.Prepare(trigger)
 	if err != nil {
 		panic(err)
@@ -61,7 +63,7 @@ func (d *Dao) setDatetimeTriggers(table string) {
 		panic(err)
 	}
 	// Add auto-lastModifiedAt on row INSERT
-	trigger = fmt.Sprintf(LastModifiedAtInsertTrigger, table, table)
+	trigger = fmt.Sprintf(LastModifiedAtInsertTrigger, table, table, table)
 	stmt, err = d.DBConn.Prepare(trigger)
 	if err != nil {
 		panic(err)
@@ -71,7 +73,7 @@ func (d *Dao) setDatetimeTriggers(table string) {
 		panic(err)
 	}
 	// Add auto-createdAt on row INSERT
-	trigger = fmt.Sprintf(createdAtInsertTrigger, table, table)
+	trigger = fmt.Sprintf(createdAtInsertTrigger, table, table, table)
 	stmt, err = d.DBConn.Prepare(trigger)
 	if err != nil {
 		panic(err)

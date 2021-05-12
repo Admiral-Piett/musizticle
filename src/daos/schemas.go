@@ -1,39 +1,61 @@
 package daos
 
-import (
-	"fmt"
-	"os"
-)
-
-var LastModifiedAtUpdateTrigger = `
-	CREATE TRIGGER IF NOT EXISTS lastModifiedAtUpdateTrigger
-		BEFORE UPDATE ON %s
-	BEGIN
-		UPDATE %s SET lastModifiedAt = DATETIME("NOW") WHERE id = old.id;
-	END;
-`
-
-var LastModifiedAtInsertTrigger = `
-	CREATE TRIGGER IF NOT EXISTS lastModifiedAtInsertTrigger
-		AFTER INSERT ON %s
-	BEGIN
-		UPDATE %s SET lastModifiedAt = DATETIME("NOW") WHERE id = new.id;
-	END;
-`
-
+// ---- Triggers
 var createdAtInsertTrigger = `
-	CREATE TRIGGER IF NOT EXISTS createdAtInsertTrigger
+	CREATE TRIGGER IF NOT EXISTS created_at_insert_trigger_%s
 		AFTER INSERT ON %s
 	BEGIN
 		UPDATE %s SET createdAt = DATETIME("NOW") WHERE id = new.id;
 	END;
 `
 
-var ArtistsSchema = fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
+var LastModifiedAtInsertTrigger = `
+	CREATE TRIGGER IF NOT EXISTS last_modified_at_insert_trigger_%s
+		AFTER INSERT ON %s
+	BEGIN
+		UPDATE %s SET lastModifiedAt = DATETIME("NOW") WHERE id = new.id;
+	END;
+`
+
+var LastModifiedAtUpdateTrigger = `
+	CREATE TRIGGER IF NOT EXISTS last_modified_at_update_trigger_%s
+		BEFORE UPDATE ON %s
+	BEGIN
+		UPDATE %s SET lastModifiedAt = DATETIME("NOW") WHERE id = old.id;
+	END;
+`
+
+
+// ---- Schemas
+var AlbumnSchema = `
+	CREATE TABLE IF NOT EXISTS albums (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT,
 		createdAt INTEGER,
 		lastModifiedAt INTEGER
 	)
-`, os.Getenv("ARTISTS_TABLE"))
+`
+
+var ArtistsSchema = `
+	CREATE TABLE IF NOT EXISTS artists (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT,
+		createdAt INTEGER,
+		lastModifiedAt INTEGER
+	)
+`
+
+var SongsSchema = `
+	CREATE TABLE IF NOT EXISTS songs (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT,
+		artist_id INTEGER,
+		album_id INTEGER,
+		play_count INTEGER,
+		file_path TEXT,
+		createdAt INTEGER,
+		lastModifiedAt INTEGER,
+		FOREIGN KEY(album_id) REFERENCES albums(id),
+		FOREIGN KEY(artist_id) REFERENCES artists(id)
+	)
+`

@@ -1,20 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Admiral-Piett/sound_control/src"
 	"log"
 	"net/http"
+	"os"
 )
 
 //TODO - environmentalize
-var PORT string = ":9000"
+var PORT string = fmt.Sprintf(":%s", os.Getenv("PORT"))
 
 func main() {
 	app := src.New()
 
 	http.HandleFunc("/", app.Router.ServeHTTP)
 
-	log.Printf("App up and running on localhost%s", PORT)
+	app.Logger.WithField("port", os.Getenv("PORT")).Info("App up and running on localhost", PORT)
 	err := http.ListenAndServe(PORT, nil)
 	if err != nil {
 		log.Fatal(err)
