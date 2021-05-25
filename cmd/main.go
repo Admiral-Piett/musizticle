@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Admiral-Piett/sound_control/src"
+	"github.com/Admiral-Piett/sound_control/src/daos"
 	"log"
 	"net/http"
 	"os"
@@ -12,7 +13,9 @@ import (
 var PORT string = fmt.Sprintf(":%s", os.Getenv("PORT"))
 
 func main() {
-	app := src.New()
+	appDaos := daos.InitializeDao()
+	defer appDaos.CloseDao()
+	app := src.New(appDaos)
 
 	http.HandleFunc("/", app.Router.ServeHTTP)
 

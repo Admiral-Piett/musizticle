@@ -49,13 +49,13 @@ var SongsSchema = `
 	CREATE TABLE IF NOT EXISTS songs (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT,
-		artist_id INTEGER,
-		album_id INTEGER,
-		play_count INTEGER,
-		file_path TEXT,
+		artistId INTEGER,
+		albumId INTEGER,
+		playCount INTEGER,
+		filePath TEXT UNIQUE,
 		createdAt INTEGER,
 		lastModifiedAt INTEGER,
-		FOREIGN KEY(album_id) REFERENCES albums(id),
-		FOREIGN KEY(artist_id) REFERENCES artists(id)
+		FOREIGN KEY(albumId) REFERENCES albums(id),
+		FOREIGN KEY(artistId) REFERENCES artists(id)
 	)
 `

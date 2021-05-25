@@ -13,14 +13,11 @@ type App struct {
 	Logger *logrus.Logger
 }
 
-func New() *App {
+func New(dao *daos.Dao) *App {
 	logger := logrus.New()
 	logger.WithFields(logrus.Fields{"my": "fart"}).Info("Starting Sound Control App...")
 
-	appDaos := daos.InitializeDao()
-	defer appDaos.CloseDao()
-
-	appHandler := handlers.InitializeHandlers(appDaos, logger)
+	appHandler := handlers.InitializeHandlers(dao, logger)
 
 	a := &App{
 		Logger: logger,

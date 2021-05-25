@@ -3,10 +3,12 @@ package daos
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Admiral-Piett/sound_control/src/utils"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 type Dao struct {
@@ -14,9 +16,9 @@ type Dao struct {
 }
 
 var schemas = map[string]string{
-	"albums": AlbumnSchema,
-	"artists": ArtistsSchema,
-	"songs": SongsSchema,
+	utils.Tables.Albums:  AlbumnSchema,
+	utils.Tables.Artists: ArtistsSchema,
+	utils.Tables.Songs:   SongsSchema,
 }
 
 func InitializeDao() *Dao {
@@ -50,8 +52,6 @@ func (d *Dao) setupTables() {
 }
 
 func (d *Dao) setDatetimeTriggers(table string) {
-	//TODO - re-enable
-	return
 	// Add auto-lastModifiedAt on row UPDATE
 	trigger := fmt.Sprintf(LastModifiedAtUpdateTrigger, table, table, table)
 	stmt, err := d.DBConn.Prepare(trigger)
@@ -88,4 +88,60 @@ func (d *Dao) CloseDao() {
 	if err := d.DBConn.Close(); err != nil {
 		panic(err)
 	}
+}
+
+
+func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery string, sanitize bool) (int64, error) {
+	if sanitize {
+		name = santizeString(name)
+	}
+	id := int64(-1)
+	query := fmt.Sprintf(findQuery, name)
+	rows, err := d.DBConn.Query(query)
+	defer rows.Close()
+	if err != nil {
+		return id, err
+	}
+	if rows.Next() {
+		//TODO - need to deal with prioritizing matches
+		err = rows.Scan(&id)
+		if err != nil {
+			return id, err
+		}
+	} else {
+		query = fmt.Sprintf(insertQuery, name)
+		stmt, err := d.DBConn.Prepare(query)
+		if err != nil {
+			return id, err
+		}
+		r, err := stmt.Exec()
+		if err != nil {
+			return id, err
+		}
+		id, err = r.LastInsertId()
+	}
+	return id, nil
+}
+
+var nonSearchableStrings = map[string]bool{
+	"the": true,
+	"a": true,
+	"ost": true,
+	"soundtrack": true,
+	"score": true,
+}
+
+func santizeString(value string) string {
+	cleaned := []string{}
+	s := strings.Split(value, " ")
+	for _, v := range(s) {
+		if !(nonSearchableStrings[strings.ToLower(v)]) {
+			cleaned = append(cleaned, v)
+		}
+	}
+	cleanedStr := strings.Join(cleaned, " ")
+	if cleanedStr == "" {
+		cleanedStr = "UNKNOWN"
+	}
+	return cleanedStr
 }
