@@ -8,33 +8,43 @@ import (
 )
 
 type ListSong struct {
-	Id             int
-	Name           string
-}
-
-type Song struct {
-	Id             int
-	Name           string
-	ArtistId       int
-	AlbumId        int
-	TrackNumber    int
-	PlayCount      int
-	FilePath       string
+	Id          int
+	Name        string
+	ArtistId    int
+	ArtistName  string
+	AlbumId     int
+	AlbumName   string
+	TrackNumber int
+	PlayCount   int
+	FilePath    string
 	// FIXME - wtf, these are strings??
 	CreatedAt      string
 	LastModifiedAt string
 }
 
-func (d *Dao) FetchAllSongs() ([]Song, error) {
-	songs := []Song{}
+type Song struct {
+	Id          int
+	Name        string
+	ArtistId    int
+	AlbumId     int
+	TrackNumber int
+	PlayCount   int
+	FilePath    string
+	// FIXME - wtf, these are strings??
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+func (d *Dao) FetchAllSongs() ([]ListSong, error) {
+	songs := []ListSong{}
 	rows, err := d.DBConn.Query(QueryAllSongs)
 	if err != nil {
 		return songs, err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		r := Song{}
-		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		r := ListSong{}
+		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
 		if err != nil {
 			return songs, err
 		}

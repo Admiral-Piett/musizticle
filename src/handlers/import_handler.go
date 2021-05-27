@@ -69,7 +69,7 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		h.Logger.WithFields(logrus.Fields{
 			utils.LogFields.ErrorMessage: err,
 			utils.LogFields.FilePath: path,
-		}).Error("FailureToOpenFile - Skipping")
+		}).Warning("FailureToOpenFile - Skipping")
 		return nil
 	}
 	artistId, err := h.Dao.FindOrCreateByName(track.Artist, daos.QueryArtistIdByName, daos.InsertArtist, true)

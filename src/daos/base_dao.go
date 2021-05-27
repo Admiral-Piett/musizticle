@@ -92,6 +92,7 @@ func (d *Dao) CloseDao() {
 
 
 func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery string, sanitize bool) (int64, error) {
+	originalName := name
 	if sanitize {
 		name = santizeString(name)
 	}
@@ -109,7 +110,7 @@ func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery stri
 			return id, err
 		}
 	} else {
-		query = fmt.Sprintf(insertQuery, name)
+		query = fmt.Sprintf(insertQuery, originalName)
 		stmt, err := d.DBConn.Prepare(query)
 		if err != nil {
 			return id, err

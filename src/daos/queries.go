@@ -42,7 +42,12 @@ INSERT INTO
 `
 
 var QueryAllSongs = `
-SELECT * FROM songs
+SELECT s.*,
+       a.name,
+       al.name
+FROM songs s
+JOIN artists a ON s.artistId = a.id
+JOIN albums al ON s.albumId = al.id
 `
 
 var QuerySongById = `
