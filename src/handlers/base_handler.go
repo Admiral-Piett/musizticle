@@ -39,6 +39,17 @@ func (h *Handler) Artists() http.HandlerFunc {
 	}
 }
 
+func (h *Handler) ServeSong() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			h.serveSong(w, r)
+		default:
+			return
+		}
+	}
+}
+
 func (h *Handler) Songs() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {

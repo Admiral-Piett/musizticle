@@ -132,12 +132,17 @@ var nonSearchableStrings = map[string]bool{
 }
 
 func santizeString(value string) string {
-	cleaned := []string{}
 	s := strings.Split(value, " ")
-	for _, v := range(s) {
-		if !(nonSearchableStrings[strings.ToLower(v)]) {
-			cleaned = append(cleaned, v)
-		}
+	if nonSearchableStrings[strings.ToLower(s[0])] {
+		s = s[1:]
+	}
+	if nonSearchableStrings[strings.ToLower(s[len(s)-1])] {
+		s = s[:len(s)-1]
+	}
+	cleaned := []string{}
+	for _, v := range s {
+		v = strings.Replace(v,"\"", "`", -1)
+		cleaned = append(cleaned, v)
 	}
 	cleanedStr := strings.Join(cleaned, " ")
 	if cleanedStr == "" {

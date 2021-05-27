@@ -5,6 +5,11 @@ import (
 	"io"
 )
 
+var InvalidFileTypes = []string{
+	".DS_Store",
+	".7z",
+}
+
 // FIXME - there has to be a more elegant object for this
 type TablesStruct struct {
 	Albums  string
@@ -18,37 +23,38 @@ var Tables = TablesStruct{
 	Songs:   "songs",
 }
 
-
 type LogFieldStruct = struct {
 	ErrorMessage string
-	FilePath string
-	RequestBody string
+	FilePath     string
+	SongID       string
+	RequestBody  string
 	StackContext string
 }
 
 var LogFields = LogFieldStruct{
 	ErrorMessage: "error_message",
-	FilePath: "file_path",
-	RequestBody: "request_body",
+	FilePath:     "file_path",
+	SongID:       "song_id",
+	RequestBody:  "request_body",
 	StackContext: "stack_context",
 }
 
 type SongMeta struct {
-	Title string
-	Album string
-	Artist string
+	Title        string
+	Album        string
+	Artist       string
 	AlbumnArtist string
-	Composer string
-	Year int
-	Genre string
-	Track int
-	TotalTracks int
-	Disc int
-	TotalDiscs int
-	Picture *tag.Picture
-	Lyrics string
-	Comment string
-	Format tag.Format
+	Composer     string
+	Year         int
+	Genre        string
+	TrackNumber  int
+	TotalTracks  int
+	Disc         int
+	TotalDiscs   int
+	Picture      *tag.Picture
+	Lyrics       string
+	Comment      string
+	Format       tag.Format
 }
 
 func GetSongMetadata(file io.ReadSeeker) (SongMeta, error) {
@@ -66,7 +72,7 @@ func GetSongMetadata(file io.ReadSeeker) (SongMeta, error) {
 		Composer:     track.Composer(),
 		Year:         track.Year(),
 		Genre:        track.Genre(),
-		Track:        trackNumber,
+		TrackNumber:  trackNumber,
 		TotalTracks:  totalTracks,
 		Disc:         discNumber,
 		TotalDiscs:   totalDiscs,

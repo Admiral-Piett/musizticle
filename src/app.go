@@ -32,6 +32,7 @@ func (a *App) initRoutes() {
 	a.Router.HandleFunc("/", a.Handler.Index()).Methods("GET")
 
 	a.Router.HandleFunc("/artists", a.Handler.Artists()).Methods("GET", "POST")
+	a.Router.HandleFunc("/song/{id:[0-9]+}", a.Handler.ServeSong()).Methods("GET")
 	a.Router.HandleFunc("/songs", a.Handler.Songs()).Methods("GET", "POST")
 
 	a.Router.HandleFunc("/import", a.Handler.Import()).Methods("POST")

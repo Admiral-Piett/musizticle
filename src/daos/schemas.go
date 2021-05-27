@@ -51,6 +51,7 @@ var SongsSchema = `
 		name TEXT,
 		artistId INTEGER,
 		albumId INTEGER,
+		trackNumber INTEGER,
 		playCount INTEGER,
 		filePath TEXT UNIQUE,
 		createdAt INTEGER,

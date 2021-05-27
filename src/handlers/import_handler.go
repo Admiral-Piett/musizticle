@@ -51,6 +51,19 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+
+	fi, _ := file.Stat()
+	if err != nil {
+		return err
+	}
+	//Return here if this is a directory
+	if fi.IsDir() {
+		return nil
+	}
+	if !(fi.Mode().IsRegular()) {
+		return nil
+	}
 	track, err := utils.GetSongMetadata(file)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
@@ -69,7 +82,7 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		checkError("FailureToFindOrAddAlbum", path, err, h.Logger)
 		return nil
 	}
-	songId, err := h.Dao.FindOrCreateSong(track.Title, artistId, albumId, path, daos.QuerySongIdByName, daos.InsertSongs, true)
+	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, path, daos.QuerySongIdByName, daos.InsertSongs, true)
 	fmt.Println(artistId, albumId, songId, path, info.Size())
 	return nil
 }
