@@ -72,17 +72,28 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		}).Warning("FailureToOpenFile - Skipping")
 		return nil
 	}
-	artistId, err := h.Dao.FindOrCreateByName(track.Artist, daos.QueryArtistIdByName, daos.InsertArtist, true)
+	artistId, err := h.Dao.FindOrCreateByName(track.Artist, daos.QueryArtistIdByName, daos.InsertArtist)
 	if err != nil || artistId == -1 {
 		checkError("FailureToFindOrAddArtist", path, err, h.Logger)
 		return nil
 	}
-	albumId, err := h.Dao.FindOrCreateByName(track.Album, daos.QueryAlbumIdByName, daos.InsertAlbum, true)
+	albumId, err := h.Dao.FindOrCreateByName(track.Album, daos.QueryAlbumIdByName, daos.InsertAlbum)
 	if err != nil || albumId == -1 {
 		checkError("FailureToFindOrAddAlbum", path, err, h.Logger)
 		return nil
 	}
-	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, path, daos.QuerySongIdByName, daos.InsertSongs, true)
+	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, path, daos.QuerySongIdByName, daos.InsertSongs)
+	if err != nil || songId == -1 {
+		checkError("FailureToFindOrAddSong", path, err, h.Logger)
+		return nil
+	}
+	h.Logger.WithFields(logrus.Fields{
+		utils.LogFields.FilePath: path,
+		utils.LogFields.SongID: songId,
+		utils.LogFields.AlbumId: albumId,
+		utils.LogFields.ArtistId: artistId,
+		utils.LogFields.Size: info.Size(),
+	}).Info("SongAdded")
 	fmt.Println(artistId, albumId, songId, path, info.Size())
 	return nil
 }

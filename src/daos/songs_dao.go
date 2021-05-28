@@ -71,13 +71,49 @@ func (d *Dao) FindSongById(id int) (Song, error) {
 	return r, nil
 }
 
-func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int64, path string, findQuery string, insertQuery string, sanitize bool) (int64, error) {
-	name := track.Title
-	if sanitize {
-		name = santizeString(name)
+func (d *Dao) FindSongsByArtistId(id int) ([]Song, error) {
+	songs := []Song{}
+	query := fmt.Sprintf(QuerySongsByArtistId, id)
+	rows, err := d.DBConn.Query(query)
+	if err != nil {
+		return songs, err
 	}
+	defer rows.Close()
+	r := Song{}
+	for rows.Next() {
+		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		if err != nil {
+			return songs, err
+		}
+		songs = append(songs, r)
+	}
+	return songs, nil
+}
+
+func (d *Dao) FindSongsByAlbumId(id int) ([]Song, error) {
+	songs := []Song{}
+	query := fmt.Sprintf(QuerySongsByAlbumId, id)
+	rows, err := d.DBConn.Query(query)
+	if err != nil {
+		return songs, err
+	}
+	defer rows.Close()
+	r := Song{}
+	for rows.Next() {
+		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		if err != nil {
+			return songs, err
+		}
+		songs = append(songs, r)
+	}
+	return songs, nil
+}
+
+func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int64, path string, findQuery string, insertQuery string) (int64, error) {
+	originalName, cleanedName := santizeString(track.Title)
+
 	id := int64(-1)
-	query := fmt.Sprintf(findQuery, name, artistId, albumId)
+	query := fmt.Sprintf(findQuery, cleanedName, artistId, albumId)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
 		return id, err
@@ -90,13 +126,14 @@ func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int
 			return id, err
 		}
 	} else {
+		playCount := 0
 		trackNumber := track.TrackNumber
 		if trackNumber <= 0 {
 			re := regexp.MustCompile("^([0-9]*)")
-			a := re.Find([]byte(name))
+			a := re.Find([]byte(cleanedName))
 			trackNumber, _ = strconv.Atoi(string(a))
 		}
-		query = fmt.Sprintf(insertQuery, track.Title, artistId, albumId, trackNumber, 0, path)
+		query = fmt.Sprintf(insertQuery, originalName, artistId, albumId, trackNumber, playCount, path)
 		stmt, err := d.DBConn.Prepare(query)
 		if err != nil {
 			return id, err

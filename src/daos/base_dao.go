@@ -91,13 +91,11 @@ func (d *Dao) CloseDao() {
 }
 
 
-func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery string, sanitize bool) (int64, error) {
-	originalName := name
-	if sanitize {
-		name = santizeString(name)
-	}
+func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery string) (int64, error) {
+	originalName, cleanedName := santizeString(name)
+
 	id := int64(-1)
-	query := fmt.Sprintf(findQuery, name)
+	query := fmt.Sprintf(findQuery, cleanedName)
 	rows, err := d.DBConn.Query(query)
 	defer rows.Close()
 	if err != nil {
@@ -132,7 +130,11 @@ var nonSearchableStrings = map[string]bool{
 	"score": true,
 }
 
-func santizeString(value string) string {
+func santizeString(originalValue string) (string, string) {
+	if originalValue == "" {
+		return "UNKNOWN", "UNKNOWN"
+	}
+	value := originalValue
 	s := strings.Split(value, " ")
 	if nonSearchableStrings[strings.ToLower(s[0])] {
 		s = s[1:]
@@ -140,14 +142,14 @@ func santizeString(value string) string {
 	if nonSearchableStrings[strings.ToLower(s[len(s)-1])] {
 		s = s[:len(s)-1]
 	}
+	//Strip out invalid values from both the originalValue and the cleaned one, as both will interact with the database.
 	cleaned := []string{}
 	for _, v := range s {
 		v = strings.Replace(v,"\"", "`", -1)
 		cleaned = append(cleaned, v)
 	}
+	originalValue = strings.Replace(originalValue,"\"", "`", -1)
+
 	cleanedStr := strings.Join(cleaned, " ")
-	if cleanedStr == "" {
-		cleanedStr = "UNKNOWN"
-	}
-	return cleanedStr
+	return originalValue, cleanedStr
 }

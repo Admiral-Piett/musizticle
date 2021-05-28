@@ -33,5 +33,19 @@ func (h *Handler) postArtists(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getArtists(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	songs, err := h.Dao.FetchAllArtists()
+	if err != nil {
+		h.Logger.WithFields(logrus.Fields{
+			utils.LogFields.ErrorMessage: err,
+		}).Error("GetArtistsFailure")
+		http.Error(w, "General Error", http.StatusInternalServerError)
+	}
+	err = json.NewEncoder(w).Encode(songs)
+	if err != nil {
+		h.Logger.WithFields(logrus.Fields{
+			utils.LogFields.ErrorMessage: err,
+		}).Error("GetArtistsFailure")
+		http.Error(w, "General Error", http.StatusInternalServerError)
+	}
 }

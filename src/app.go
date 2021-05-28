@@ -31,9 +31,14 @@ func New(dao *daos.Dao) *App {
 func (a *App) initRoutes() {
 	a.Router.HandleFunc("/", a.Handler.Index()).Methods("GET")
 
-	a.Router.HandleFunc("/artists", a.Handler.Artists()).Methods("GET", "POST")
-	a.Router.HandleFunc("/song/{id:[0-9]+}", a.Handler.ServeSong()).Methods("GET")
-	a.Router.HandleFunc("/songs", a.Handler.Songs()).Methods("GET", "POST")
+	a.Router.HandleFunc("/api/albums", a.Handler.Albums()).Methods("GET", "POST")
+	a.Router.HandleFunc("/api/artists", a.Handler.Artists()).Methods("GET", "POST")
+	a.Router.HandleFunc("/api/songs/{id:[0-9]+}", a.Handler.ServeSong()).Methods("GET")
+	a.Router.HandleFunc("/api/songs", a.Handler.Songs()).Methods("GET", "POST")
+	a.Router.HandleFunc("/api/songs/artists/{id:[0-9]+}", a.Handler.GetSongsByArtist()).Methods("GET")
+	a.Router.HandleFunc("/api/songs/albums/{id:[0-9]+}", a.Handler.GetSongsByArtist()).Methods("GET")
 
-	a.Router.HandleFunc("/import", a.Handler.Import()).Methods("POST")
+	//a.Router.HandleFunc("/api/search/songs/{name:[0-9]+}", a.Handler.Songs()).Methods("GET", "POST")
+
+	a.Router.HandleFunc("/api/import", a.Handler.Import()).Methods("POST")
 }

@@ -8,6 +8,11 @@ INSERT INTO
 	values("%s")
 `
 
+var QueryAllAlbums = `
+SELECT *
+FROM albums
+`
+
 var QueryAlbumIdByName = `
 SELECT
        id
@@ -23,6 +28,11 @@ var InsertArtist = `
 INSERT INTO 
 	artists(name)
 	values("%s")
+`
+
+var QueryAllArtists = `
+SELECT *
+FROM artists
 `
 
 var QueryArtistIdByName = `
@@ -52,6 +62,14 @@ JOIN albums al ON s.albumId = al.id
 
 var QuerySongById = `
 SELECT * FROM songs WHERE id = %d
+`
+
+var QuerySongsByAlbumId = `
+SELECT * FROM songs WHERE artistId = %d
+`
+
+var QuerySongsByArtistId = `
+SELECT * FROM songs WHERE artistId = %d
 `
 
 var QuerySongIdByName = `
