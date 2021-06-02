@@ -1,3 +1,11 @@
 *.env
 *.db*
 .idea
+
+*/dist
+*/node_modules
+*/.cache
+*/.parcel-cache
+
+#Binaries
+main
