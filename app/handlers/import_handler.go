@@ -3,8 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Admiral-Piett/sound_control/src/daos"
-	"github.com/Admiral-Piett/sound_control/src/utils"
+	"github.com/Admiral-Piett/sound_control/app/daos"
+	"github.com/Admiral-Piett/sound_control/app/utils"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"

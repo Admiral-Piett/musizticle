@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/Admiral-Piett/sound_control/src/utils"
+	"github.com/Admiral-Piett/sound_control/app/utils"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )

@@ -1,19 +1,22 @@
-package src
+package app
 
 import (
-	"github.com/Admiral-Piett/sound_control/src/daos"
-	"github.com/Admiral-Piett/sound_control/src/handlers"
+	"github.com/Admiral-Piett/sound_control/app/daos"
+	"github.com/Admiral-Piett/sound_control/app/handlers"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"io/fs"
+	"net/http"
 )
 
 type App struct {
 	Router *mux.Router
 	Handler *handlers.Handler
 	Logger *logrus.Logger
+	FrontEnd *fs.FS
 }
 
-func New(dao *daos.Dao) *App {
+func New(dao *daos.Dao, distFS fs.FS) *App {
 	logger := logrus.New()
 	logger.WithFields(logrus.Fields{"my": "fart"}).Info("Starting Sound Control App...")
 
@@ -23,13 +26,14 @@ func New(dao *daos.Dao) *App {
 		Logger: logger,
 		Router:   mux.NewRouter(),
 		Handler: appHandler,
+		FrontEnd: &distFS,
 	}
 	a.initRoutes()
 	return a
 }
 
 func (a *App) initRoutes() {
-	a.Router.HandleFunc("/", a.Handler.Index()).Methods("GET")
+	a.Router.Handle("/", http.FileServer(http.FS(*a.FrontEnd))).Methods("GET")
 
 	a.Router.HandleFunc("/api/albums", a.Handler.Albums()).Methods("GET", "POST")
 	a.Router.HandleFunc("/api/artists", a.Handler.Artists()).Methods("GET", "POST")
