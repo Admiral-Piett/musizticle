@@ -10,6 +10,7 @@ import (
 )
 
 func (h *Handler) getSongs(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("GetSongsStart")
 	w.Header().Set("Content-Type", "application/json")
 	songs, err := h.Dao.FetchAllSongs()
 	if err != nil {
@@ -25,6 +26,7 @@ func (h *Handler) getSongs(w http.ResponseWriter, r *http.Request) {
 		}).Error("GetSongsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
+	h.Logger.Info("GetSongsComplete")
 }
 
 func (h *Handler) postSongs(w http.ResponseWriter, r *http.Request) {

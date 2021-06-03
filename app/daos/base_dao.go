@@ -25,7 +25,7 @@ func InitializeDao() *Dao {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	os.Mkdir(fmt.Sprintf("%s/data", projectDirectory), 0755)
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, os.Getenv("SQL_LITE_FILE")))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, utils.SQLITE_DB))
 	if err != nil {
 		panic(err)
 	}

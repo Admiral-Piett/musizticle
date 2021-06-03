@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/fs"
 	"net/http"
+	"os"
 )
 
 type App struct {
@@ -18,7 +19,12 @@ type App struct {
 
 func New(dao *daos.Dao, distFS fs.FS) *App {
 	logger := logrus.New()
-	logger.WithFields(logrus.Fields{"my": "fart"}).Info("Starting Sound Control App...")
+	if os.Getenv("LOG_LEVEL") == "DEBUG" {
+		logger.SetLevel(logrus.DebugLevel)
+	} else {
+		logger.SetLevel(logrus.InfoLevel)
+	}
+	logger.WithFields(logrus.Fields{"it's a": "fart"}).Info("Starting Sound Control App...")
 
 	appHandler := handlers.InitializeHandlers(dao, logger)
 
