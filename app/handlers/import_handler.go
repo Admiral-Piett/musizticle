@@ -2,11 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/Admiral-Piett/sound_control/app/daos"
 	"github.com/Admiral-Piett/sound_control/app/utils"
 	"github.com/sirupsen/logrus"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -35,12 +33,13 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Invalid Request Format"))
 		return
 	}
-	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("ImportRequest")
+	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("ImportRequestStart")
 //	TODO - to filepath.WalkPath here and scope out directory
 	err = filepath.Walk(request.ImportDir, h.importSong)
 	if err != nil {
-		log.Println(err)
+		h.Logger.Error(err)
 	}
+	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("ImportRequestComplete")
 }
 
 func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
@@ -69,7 +68,7 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		h.Logger.WithFields(logrus.Fields{
 			utils.LogFields.ErrorMessage: err,
 			utils.LogFields.FilePath: path,
-		}).Warning("FailureToOpenFile - Skipping")
+		}).Error("FailureToOpenFile - Skipping")
 		return nil
 	}
 	artistId, err := h.Dao.FindOrCreateByName(track.Artist, daos.QueryArtistIdByName, daos.InsertArtist)
@@ -93,8 +92,7 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		utils.LogFields.AlbumId: albumId,
 		utils.LogFields.ArtistId: artistId,
 		utils.LogFields.Size: info.Size(),
-	}).Info("SongAdded")
-	fmt.Println(artistId, albumId, songId, path, info.Size())
+	}).Debug("SongAdded")
 	return nil
 }
 

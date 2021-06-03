@@ -9,6 +9,7 @@ import (
 var PORT string = "9000"
 var SQLITE_DB string = "sound_control.db"
 
+//TODO - Use me
 var InvalidFileTypes = []string{
 	".DS_Store",
 	".7z",
