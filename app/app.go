@@ -52,3 +52,25 @@ func (a *App) initRoutes() {
 
 	a.Router.HandleFunc("/api/import", a.Handler.Import()).Methods("POST")
 }
+
+// --- CORS Proxy ---
+// FIXME - environmentalize (or part of the build process?)
+var CORS_ALLOW_HEADERS = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
+var CORS_ALLOW_METHODS = "POST, GET, OPTIONS, PUT, DELETE"
+var CORS_ALLOW_ORIGINS = "*"
+
+func setupCORS(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", CORS_ALLOW_ORIGINS)
+	(*w).Header().Set("Access-Control-Allow-Methods", CORS_ALLOW_METHODS)
+	(*w).Header().Set("Access-Control-Allow-Headers", CORS_ALLOW_HEADERS)
+}
+
+// Proxy Handler to deal with all incoming requests in main.go.  If the Method is OPTIONS, assume this is a pre-flight
+//  CORS check and return CORS headers here.
+func (a *App) ProxyHandler(w http.ResponseWriter, req *http.Request) {
+	setupCORS(&w, req)
+	if req.Method == "OPTIONS" {
+		return
+	}
+	a.Router.ServeHTTP(w, req)
+}

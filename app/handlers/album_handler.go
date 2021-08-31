@@ -14,7 +14,6 @@ type AlbumsHandler struct {
 
 
 func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	songs, err := h.Dao.FetchAllAlbums()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{

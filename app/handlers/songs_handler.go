@@ -11,7 +11,6 @@ import (
 
 func (h *Handler) getSongs(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetSongsStart")
-	w.Header().Set("Content-Type", "application/json")
 	songs, err := h.Dao.FetchAllSongs()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
@@ -40,7 +39,6 @@ func (h *Handler) GetSongsByArtist() http.HandlerFunc {
 }
 
 func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
@@ -72,7 +70,6 @@ func (h *Handler) GetSongsByAlbum() http.HandlerFunc {
 }
 
 func (h *Handler) getSongsByAlbumId(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {

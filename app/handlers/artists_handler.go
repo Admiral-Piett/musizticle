@@ -12,6 +12,7 @@ type Artist struct {
 }
 
 func (h *Handler) postArtists(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("PostArtistsStart")
 	req := Artist{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.Logger.WithFields(logrus.Fields{
@@ -27,13 +28,14 @@ func (h *Handler) postArtists(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid Request", http.StatusBadRequest)
 		return
 	}
-	//TODO - add artist to postgres via h.ArtistsDao.artists
+	h.Logger.Info("PostArtistsComplete")
+	//TODO - add artist to db via h.ArtistsDao.artists
 	w.WriteHeader(http.StatusCreated)
 	return
 }
 
 func (h *Handler) getArtists(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	h.Logger.Info("GetArtistsStart")
 	songs, err := h.Dao.FetchAllArtists()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
@@ -48,4 +50,5 @@ func (h *Handler) getArtists(w http.ResponseWriter, r *http.Request) {
 		}).Error("GetArtistsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
+	h.Logger.Info("GetArtistsComplete")
 }

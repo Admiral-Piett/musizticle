@@ -4,6 +4,7 @@ import (
 	"github.com/Admiral-Piett/sound_control/app/daos"
 	"github.com/sirupsen/logrus"
 	"net/http"
+
 )
 
 type Handler struct {
@@ -19,6 +20,7 @@ func InitializeHandlers(dao *daos.Dao, logger *logrus.Logger) *Handler {
 // HTTP Method Routers
 func (h *Handler) Albums() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case "GET":
 			h.getAlbums(w, r)
@@ -30,6 +32,7 @@ func (h *Handler) Albums() http.HandlerFunc {
 
 func (h *Handler) Artists() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case "GET":
 			h.getArtists(w, r)
@@ -52,6 +55,7 @@ func (h *Handler) ServeSong() http.HandlerFunc {
 
 func (h *Handler) Songs() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case "GET":
 			h.getSongs(w, r)

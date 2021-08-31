@@ -25,7 +25,7 @@ func main() {
 	defer appDaos.CloseDao()
 	app := app.New(appDaos, distFS)
 
-	http.HandleFunc("/", app.Router.ServeHTTP)
+	http.HandleFunc("/", app.ProxyHandler)
 
 	app.Logger.Info("App up and running on http://localhost:", utils.PORT)
 	err = http.ListenAndServe(fmt.Sprintf(":%s", utils.PORT), nil)
