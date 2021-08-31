@@ -39,6 +39,7 @@ func (h *Handler) GetSongsByArtist() http.HandlerFunc {
 }
 
 func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("GetSongsByArtistsIdStart")
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
@@ -61,6 +62,7 @@ func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
 		}).Error("GetSongsByArtistIdFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
+	h.Logger.Info("GetSongsByArtistsIdComplete")
 }
 
 func (h *Handler) GetSongsByAlbum() http.HandlerFunc {
@@ -70,6 +72,7 @@ func (h *Handler) GetSongsByAlbum() http.HandlerFunc {
 }
 
 func (h *Handler) getSongsByAlbumId(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("GetSongsByAlbumIdStart")
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
@@ -92,6 +95,7 @@ func (h *Handler) getSongsByAlbumId(w http.ResponseWriter, r *http.Request) {
 		}).Error("GetSongsByAlbumIdFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
+	h.Logger.Info("GetSongsByAlbumIdComplete")
 }
 
 

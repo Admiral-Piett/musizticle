@@ -21,6 +21,7 @@ func (h *Handler) Import() http.HandlerFunc {
 }
 
 func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("SongImportStart")
 	request := ImportRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request);
 	if err != nil || request.ImportDir == "" {
@@ -33,13 +34,13 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Invalid Request Format"))
 		return
 	}
-	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("ImportRequestStart")
+	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportStart")
 //	TODO - to filepath.WalkPath here and scope out directory
 	err = filepath.Walk(request.ImportDir, h.importSong)
 	if err != nil {
 		h.Logger.Error(err)
 	}
-	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("ImportRequestComplete")
+	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportComplete")
 }
 
 func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
