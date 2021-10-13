@@ -24,7 +24,7 @@ func (h *Handler) postArtists(w http.ResponseWriter, r *http.Request) {
 	if req.Name == "" {
 		h.Logger.WithFields(logrus.Fields{
 			utils.LogFields.RequestBody: req,
-		}).Error("PostArtistFailure - Invalid Name Field")
+		}).Error("PostArtistFailure - Invalid Title Field")
 		http.Error(w, "Invalid Request", http.StatusBadRequest)
 		return
 	}

@@ -9,7 +9,7 @@ import (
 
 type ListSong struct {
 	Id          int
-	Name        string
+	Title       string
 	ArtistId    int
 	ArtistName  string
 	AlbumId     int
@@ -17,20 +17,20 @@ type ListSong struct {
 	TrackNumber int
 	PlayCount   int
 	FilePath    string
-	// FIXME - wtf, these are strings??
+	//FIXME - wtf, these are strings??
 	CreatedAt      string
 	LastModifiedAt string
 }
 
 type Song struct {
 	Id          int
-	Name        string
+	Title       string
 	ArtistId    int
 	AlbumId     int
 	TrackNumber int
 	PlayCount   int
 	FilePath    string
-	// FIXME - wtf, these are strings??
+	//FIXME - wtf, these are strings??
 	CreatedAt      string
 	LastModifiedAt string
 }
@@ -44,7 +44,7 @@ func (d *Dao) FetchAllSongs() ([]ListSong, error) {
 	defer rows.Close()
 	for rows.Next() {
 		r := ListSong{}
-		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
+		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
 		if err != nil {
 			return songs, err
 		}
@@ -63,7 +63,7 @@ func (d *Dao) FindSongById(id int) (Song, error) {
 	defer rows.Close()
 	r := Song{}
 	if rows.Next() {
-		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
 		if err != nil {
 			return Song{}, err
 		}
@@ -81,7 +81,7 @@ func (d *Dao) FindSongsByArtistId(id int) ([]Song, error) {
 	defer rows.Close()
 	r := Song{}
 	for rows.Next() {
-		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
 		if err != nil {
 			return songs, err
 		}
@@ -100,7 +100,7 @@ func (d *Dao) FindSongsByAlbumId(id int) ([]Song, error) {
 	defer rows.Close()
 	r := Song{}
 	for rows.Next() {
-		err = rows.Scan(&r.Id, &r.Name, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
 		if err != nil {
 			return songs, err
 		}
