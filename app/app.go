@@ -11,9 +11,9 @@ import (
 )
 
 type App struct {
-	Router *mux.Router
-	Handler *handlers.Handler
-	Logger *logrus.Logger
+	Router   *mux.Router
+	Handler  *handlers.Handler
+	Logger   *logrus.Logger
 	FrontEnd *fs.FS
 }
 
@@ -29,9 +29,9 @@ func New(dao *daos.Dao, distFS fs.FS) *App {
 	appHandler := handlers.InitializeHandlers(dao, logger)
 
 	a := &App{
-		Logger: logger,
+		Logger:   logger,
 		Router:   mux.NewRouter(),
-		Handler: appHandler,
+		Handler:  appHandler,
 		FrontEnd: &distFS,
 	}
 	a.initRoutes()

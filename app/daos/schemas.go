@@ -25,7 +25,6 @@ var LastModifiedAtUpdateTrigger = `
 	END;
 `
 
-
 // ---- Schemas
 var AlbumnSchema = `
 	CREATE TABLE IF NOT EXISTS albums (

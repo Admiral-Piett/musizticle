@@ -23,10 +23,10 @@ func (h *Handler) Import() http.HandlerFunc {
 func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("SongImportStart")
 	request := ImportRequest{}
-	err := json.NewDecoder(r.Body).Decode(&request);
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil || request.ImportDir == "" {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.RequestBody: r,
+			utils.LogFields.RequestBody:  r,
 			utils.LogFields.StackContext: "songImport",
 			utils.LogFields.ErrorMessage: err,
 		}).Error("InvalidSongImportRequest")
@@ -35,7 +35,7 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportStart")
-//	TODO - to filepath.WalkPath here and scope out directory
+	//	TODO - to filepath.WalkPath here and scope out directory
 	err = filepath.Walk(request.ImportDir, h.importSong)
 	if err != nil {
 		h.Logger.Error(err)
@@ -68,7 +68,7 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
 			utils.LogFields.ErrorMessage: err,
-			utils.LogFields.FilePath: path,
+			utils.LogFields.FilePath:     path,
 		}).Error("FailureToOpenFile - Skipping")
 		return nil
 	}
@@ -89,10 +89,10 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 	}
 	h.Logger.WithFields(logrus.Fields{
 		utils.LogFields.FilePath: path,
-		utils.LogFields.SongID: songId,
-		utils.LogFields.AlbumId: albumId,
+		utils.LogFields.SongID:   songId,
+		utils.LogFields.AlbumId:  albumId,
 		utils.LogFields.ArtistId: artistId,
-		utils.LogFields.Size: info.Size(),
+		utils.LogFields.Size:     info.Size(),
 	}).Debug("SongAdded")
 	return nil
 }
@@ -100,7 +100,6 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 func checkError(message string, file string, err error, logger *logrus.Logger) {
 	logger.WithFields(logrus.Fields{
 		utils.LogFields.ErrorMessage: err,
-		utils.LogFields.FilePath: file,
+		utils.LogFields.FilePath:     file,
 	}).Error("%s - Skipping", message)
 }
-

@@ -11,7 +11,6 @@ import (
 	"net/http"
 )
 
-
 var nextFS embed.FS
 
 func main() {

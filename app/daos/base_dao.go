@@ -12,7 +12,7 @@ import (
 )
 
 type Dao struct {
-	DBConn     *sql.DB
+	DBConn *sql.DB
 }
 
 var schemas = map[string]string{
@@ -37,7 +37,7 @@ func InitializeDao() *Dao {
 }
 
 func (d *Dao) setupTables() {
-	for table, schema := range(schemas) {
+	for table, schema := range schemas {
 		stmt, err := d.DBConn.Prepare(schema)
 		if err != nil {
 			panic(err)
@@ -90,7 +90,6 @@ func (d *Dao) CloseDao() {
 	}
 }
 
-
 func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery string) (int64, error) {
 	originalName, cleanedName := santizeString(name)
 
@@ -123,11 +122,11 @@ func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery stri
 }
 
 var nonSearchableStrings = map[string]bool{
-	"the": true,
-	"a": true,
-	"ost": true,
+	"the":        true,
+	"a":          true,
+	"ost":        true,
 	"soundtrack": true,
-	"score": true,
+	"score":      true,
 }
 
 func santizeString(originalValue string) (string, string) {
@@ -145,10 +144,10 @@ func santizeString(originalValue string) (string, string) {
 	//Strip out invalid values from both the originalValue and the cleaned one, as both will interact with the database.
 	cleaned := []string{}
 	for _, v := range s {
-		v = strings.Replace(v,"\"", "`", -1)
+		v = strings.Replace(v, "\"", "`", -1)
 		cleaned = append(cleaned, v)
 	}
-	originalValue = strings.Replace(originalValue,"\"", "`", -1)
+	originalValue = strings.Replace(originalValue, "\"", "`", -1)
 
 	cleanedStr := strings.Join(cleaned, " ")
 	return originalValue, cleanedStr

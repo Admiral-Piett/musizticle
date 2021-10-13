@@ -29,4 +29,3 @@ func (h *Handler) serveSong(w http.ResponseWriter, r *http.Request) {
 	}).Info("ServingSong")
 	http.ServeFile(w, r, song.FilePath)
 }
-

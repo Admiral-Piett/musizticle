@@ -12,7 +12,6 @@ type AlbumsHandler struct {
 	Dao *daos.Dao
 }
 
-
 func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetAlbumsStart")
 	songs, err := h.Dao.FetchAllAlbums()
@@ -36,4 +35,3 @@ func (h *Handler) postAlbums(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("PostAlbumsStart")
 	h.Logger.Info("PostAlbumsComplete")
 }
-

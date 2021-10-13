@@ -97,5 +97,3 @@ func (h *Handler) getSongsByAlbumId(w http.ResponseWriter, r *http.Request) {
 	}
 	h.Logger.Info("GetSongsByAlbumIdComplete")
 }
-
-

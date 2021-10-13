@@ -4,11 +4,10 @@ import (
 	"github.com/Admiral-Piett/musizticle/app/daos"
 	"github.com/sirupsen/logrus"
 	"net/http"
-
 )
 
 type Handler struct {
-	Dao *daos.Dao
+	Dao    *daos.Dao
 	Logger *logrus.Logger
 }
 
@@ -64,6 +63,3 @@ func (h *Handler) Songs() http.HandlerFunc {
 		}
 	}
 }
-
-
-
