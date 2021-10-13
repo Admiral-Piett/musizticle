@@ -1,4 +1,4 @@
-module github.com/Admiral-Piett/sound_control
+module github.com/Admiral-Piett/musizticle
 
 go 1.16
 

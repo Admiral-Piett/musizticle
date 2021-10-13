@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/Admiral-Piett/sound_control/app/daos"
-	"github.com/Admiral-Piett/sound_control/app/handlers"
+	"github.com/Admiral-Piett/musizticle/app/daos"
+	"github.com/Admiral-Piett/musizticle/app/handlers"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"io/fs"

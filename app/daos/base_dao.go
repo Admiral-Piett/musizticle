@@ -3,7 +3,7 @@ package daos
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Admiral-Piett/sound_control/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/utils"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 	"path/filepath"

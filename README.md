@@ -1,4 +1,4 @@
-# sound_control
+# musizticle
 
 ## To run:
 Run:

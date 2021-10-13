@@ -2,7 +2,7 @@ package daos
 
 import (
 	"fmt"
-	"github.com/Admiral-Piett/sound_control/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/utils"
 	"regexp"
 	"strconv"
 )

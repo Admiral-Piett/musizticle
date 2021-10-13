@@ -3,9 +3,9 @@ package main
 import (
 	"embed"
 	"fmt"
-	"github.com/Admiral-Piett/sound_control/app"
-	"github.com/Admiral-Piett/sound_control/app/daos"
-	"github.com/Admiral-Piett/sound_control/app/utils"
+	"github.com/Admiral-Piett/musizticle/app"
+	"github.com/Admiral-Piett/musizticle/app/daos"
+	"github.com/Admiral-Piett/musizticle/app/utils"
 	"io/fs"
 	"log"
 	"net/http"

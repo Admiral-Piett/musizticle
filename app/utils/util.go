@@ -7,7 +7,7 @@ import (
 
 //TODO - environmentalize
 var PORT string = "9000"
-var SQLITE_DB string = "sound_control.db"
+var SQLITE_DB string = "musizticle.db"
 
 //TODO - Use me
 var InvalidFileTypes = []string{
