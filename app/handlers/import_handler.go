@@ -34,13 +34,17 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Invalid Request Format"))
 		return
 	}
-	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportStart")
-	//	TODO - to filepath.WalkPath here and scope out directory
-	err = filepath.Walk(request.ImportDir, h.importSong)
-	if err != nil {
-		h.Logger.Error(err)
-	}
-	h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportComplete")
+
+	go func() {
+		h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportStart")
+		err = filepath.Walk(request.ImportDir, h.importSong)
+		if err != nil {
+			h.Logger.Error(err)
+		}
+		h.Logger.WithField(utils.LogFields.RequestBody, request).Info("SongImportComplete")
+	}()
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Song Import Started"))
 }
 
 func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
