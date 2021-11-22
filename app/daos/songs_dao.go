@@ -1,6 +1,7 @@
 package daos
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/Admiral-Piett/musizticle/app/utils"
 	"regexp"
@@ -23,17 +24,11 @@ type ListSong struct {
 	LastModifiedAt string
 }
 
-type Song struct {
-	Id          int
-	Title       string
-	ArtistId    int
-	AlbumId     int
-	TrackNumber int
-	PlayCount   int
-	FilePath    string
-	//FIXME - wtf, these are strings??
-	CreatedAt      string
-	LastModifiedAt string
+func scanSong(rows *sql.Rows, r *ListSong, set_names bool) error {
+	if !set_names {
+		return rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.Duration, &r.CreatedAt, &r.LastModifiedAt)
+	}
+	return rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.Duration, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
 }
 
 func (d *Dao) FetchAllSongs() ([]ListSong, error) {
@@ -45,7 +40,7 @@ func (d *Dao) FetchAllSongs() ([]ListSong, error) {
 	defer rows.Close()
 	for rows.Next() {
 		r := ListSong{}
-		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.Duration, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
+		err = scanSong(rows, &r, true)
 		if err != nil {
 			return songs, err
 		}
@@ -55,34 +50,34 @@ func (d *Dao) FetchAllSongs() ([]ListSong, error) {
 	return songs, nil
 }
 
-func (d *Dao) FindSongById(id int) (Song, error) {
+func (d *Dao) FindSongById(id int) (ListSong, error) {
 	query := fmt.Sprintf(QuerySongById, id)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
-		return Song{}, err
+		return ListSong{}, err
 	}
 	defer rows.Close()
-	r := Song{}
+	r := ListSong{}
 	if rows.Next() {
-		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		err = scanSong(rows, &r, false)
 		if err != nil {
-			return Song{}, err
+			return ListSong{}, err
 		}
 	}
 	return r, nil
 }
 
-func (d *Dao) FindSongsByArtistId(id int) ([]Song, error) {
-	songs := []Song{}
+func (d *Dao) FindSongsByArtistId(id int) ([]ListSong, error) {
+	songs := []ListSong{}
 	query := fmt.Sprintf(QuerySongsByArtistId, id)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
 		return songs, err
 	}
 	defer rows.Close()
-	r := Song{}
+	r := ListSong{}
 	for rows.Next() {
-		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		err = scanSong(rows, &r, false)
 		if err != nil {
 			return songs, err
 		}
@@ -91,17 +86,17 @@ func (d *Dao) FindSongsByArtistId(id int) ([]Song, error) {
 	return songs, nil
 }
 
-func (d *Dao) FindSongsByAlbumId(id int) ([]Song, error) {
-	songs := []Song{}
+func (d *Dao) FindSongsByAlbumId(id int) ([]ListSong, error) {
+	songs := []ListSong{}
 	query := fmt.Sprintf(QuerySongsByAlbumId, id)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
 		return songs, err
 	}
 	defer rows.Close()
-	r := Song{}
+	r := ListSong{}
 	for rows.Next() {
-		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt)
+		err = scanSong(rows, &r, false)
 		if err != nil {
 			return songs, err
 		}
