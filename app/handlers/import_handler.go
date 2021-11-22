@@ -82,7 +82,7 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		checkError("FailureToFindOrAddAlbum", path, err, h.Logger)
 		return nil
 	}
-	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, path, daos.QuerySongIdByName, daos.InsertSongs)
+	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, path, track.Duration, daos.QuerySongIdByName, daos.InsertSongs)
 	if err != nil || songId == -1 {
 		checkError("FailureToFindOrAddSong", path, err, h.Logger)
 		return nil

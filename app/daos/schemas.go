@@ -53,6 +53,7 @@ var SongsSchema = `
 		trackNumber INTEGER,
 		playCount INTEGER,
 		filePath TEXT UNIQUE,
+		duration INTEGER,
 		createdAt INTEGER,
 		lastModifiedAt INTEGER,
 		FOREIGN KEY(albumId) REFERENCES albums(id),

@@ -17,6 +17,7 @@ type ListSong struct {
 	TrackNumber int
 	PlayCount   int
 	FilePath    string
+	Duration 	int
 	//FIXME - wtf, these are strings??
 	CreatedAt      string
 	LastModifiedAt string
@@ -44,7 +45,7 @@ func (d *Dao) FetchAllSongs() ([]ListSong, error) {
 	defer rows.Close()
 	for rows.Next() {
 		r := ListSong{}
-		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
+		err = rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.Duration, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
 		if err != nil {
 			return songs, err
 		}
@@ -109,7 +110,7 @@ func (d *Dao) FindSongsByAlbumId(id int) ([]Song, error) {
 	return songs, nil
 }
 
-func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int64, path string, findQuery string, insertQuery string) (int64, error) {
+func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int64, path string, duration int, findQuery string, insertQuery string) (int64, error) {
 	originalName, cleanedName := santizeString(track.Title)
 
 	id := int64(-1)
@@ -133,7 +134,7 @@ func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int
 			a := re.Find([]byte(cleanedName))
 			trackNumber, _ = strconv.Atoi(string(a))
 		}
-		query = fmt.Sprintf(insertQuery, originalName, artistId, albumId, trackNumber, playCount, path)
+		query = fmt.Sprintf(insertQuery, originalName, artistId, albumId, trackNumber, playCount, path, duration)
 		stmt, err := d.DBConn.Prepare(query)
 		if err != nil {
 			return id, err

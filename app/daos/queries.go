@@ -47,8 +47,8 @@ WHERE
 // --- Songs
 var InsertSongs = `
 INSERT INTO 
-	songs(name, artistId, albumId, trackNumber, playCount, filePath)
-	values("%s", %d, %d, %d, %d, "%s")
+	songs(name, artistId, albumId, trackNumber, playCount, filePath, duration)
+	values("%s", %d, %d, %d, %d, "%s", %d)
 `
 
 var QueryAllSongs = `

@@ -1,8 +1,11 @@
 package utils
 
 import (
-	"github.com/dhowden/tag"
+	"fmt"
 	"io"
+
+	"github.com/dhowden/tag"
+	"github.com/tcolgate/mp3"
 )
 
 //TODO - environmentalize
@@ -66,6 +69,30 @@ type SongMeta struct {
 	Lyrics       string
 	Comment      string
 	Format       tag.Format
+	Duration     int
+}
+
+func getTime(file io.ReadSeeker) (int, error) {
+	// FIXME - should I not add in extra?  I could get more exact I suppose?
+	t := 1.0
+
+	d := mp3.NewDecoder(file)
+	var f mp3.Frame
+	skipped := 0
+
+	for {
+
+		if err := d.Decode(&f, &skipped); err != nil {
+			if err == io.EOF {
+				break
+			}
+			fmt.Println(err)
+			return int(t), err
+		}
+
+		t = t + f.Duration().Seconds()
+	}
+	return int(t), nil
 }
 
 func GetSongMetadata(file io.ReadSeeker) (SongMeta, error) {
@@ -75,6 +102,10 @@ func GetSongMetadata(file io.ReadSeeker) (SongMeta, error) {
 	}
 	trackNumber, totalTracks := track.Track()
 	discNumber, totalDiscs := track.Disc()
+	duration, err := getTime(file)
+	if err != nil {
+		return SongMeta{}, err
+	}
 	song_meta := SongMeta{
 		Title:        track.Title(),
 		Album:        track.Album(),
@@ -91,6 +122,7 @@ func GetSongMetadata(file io.ReadSeeker) (SongMeta, error) {
 		Lyrics:       track.Lyrics(),
 		Comment:      track.Comment(),
 		Format:       track.Format(),
+		Duration:     duration,
 	}
 	return song_meta, nil
 }
