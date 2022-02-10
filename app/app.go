@@ -24,7 +24,7 @@ func New(dao *daos.Dao, distFS fs.FS) *App {
 	} else {
 		logger.SetLevel(logrus.InfoLevel)
 	}
-	logger.WithFields(logrus.Fields{"it's a": "fart"}).Info("Starting Sound Control App...")
+	logger.WithFields(logrus.Fields{"it's an": "log!"}).Info("Starting Sound Control App...")
 
 	appHandler := handlers.InitializeHandlers(dao, logger)
 
