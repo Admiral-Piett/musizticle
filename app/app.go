@@ -1,9 +1,11 @@
 package app
 
 import (
+	app_cache "github.com/Admiral-Piett/musizticle/app/cache"
 	"github.com/Admiral-Piett/musizticle/app/daos"
 	"github.com/Admiral-Piett/musizticle/app/handlers"
 	"github.com/gorilla/mux"
+	"github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
 	"io/fs"
 	"net/http"
@@ -15,6 +17,7 @@ type App struct {
 	Handler  *handlers.Handler
 	Logger   *logrus.Logger
 	FrontEnd *fs.FS
+	Cache		*cache.Cache
 }
 
 func New(dao *daos.Dao, distFS fs.FS) *App {
@@ -26,7 +29,9 @@ func New(dao *daos.Dao, distFS fs.FS) *App {
 	}
 	logger.WithFields(logrus.Fields{"it's a": "fart"}).Info("Starting Sound Control App...")
 
-	appHandler := handlers.InitializeHandlers(dao, logger)
+	appCache := app_cache.InitCache()
+
+	appHandler := handlers.InitializeHandlers(dao, appCache, logger)
 
 	a := &App{
 		Logger:   logger,

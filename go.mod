@@ -6,6 +6,7 @@ require (
 	github.com/dhowden/tag v0.0.0-20201120070457-d52dcb253c63
 	github.com/gorilla/mux v1.8.0
 	github.com/mattn/go-sqlite3 v1.14.7
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tcolgate/mp3 v0.0.0-20170426193717-e79c5a46d300
 	go.uber.org/multierr v1.7.0 // indirect

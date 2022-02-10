@@ -11,12 +11,16 @@ import (
 //TODO - environmentalize
 var PORT string = "9000"
 var SQLITE_DB string = "musizticle.db"
+var CACHE_EXPIRATION_MINUTES = 10
+var CACHE_CLEANUP_MINUTES = 30
 
 //TODO - Use me
 var InvalidFileTypes = []string{
 	".DS_Store",
 	".7z",
 }
+
+var CACHE_HEADER_KEY string = ""
 
 // FIXME - there has to be a more elegant object for this
 type TablesStruct struct {
