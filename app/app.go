@@ -41,6 +41,9 @@ func New(dao *daos.Dao, distFS fs.FS) *App {
 func (a *App) initRoutes() {
 	a.Router.Handle("/", http.FileServer(http.FS(*a.FrontEnd))).Methods("GET")
 
+	a.Router.HandleFunc("/api/auth", a.Handler.Auth).Methods("POST")
+	a.Router.HandleFunc("/api/reauth", a.Handler.ReAuth).Methods("POST")
+
 	a.Router.HandleFunc("/api/albums", a.Handler.Albums()).Methods("GET", "POST")
 	a.Router.HandleFunc("/api/artists", a.Handler.Artists()).Methods("GET", "POST")
 	a.Router.HandleFunc("/api/songs/{id:[0-9]+}", a.Handler.ServeSong()).Methods("GET")
