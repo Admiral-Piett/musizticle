@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/Admiral-Piett/musizticle/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -14,14 +14,14 @@ func (h *Handler) getSongs(w http.ResponseWriter, r *http.Request) {
 	songs, err := h.Dao.FetchAllSongs()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
 	err = json.NewEncoder(w).Encode(songs)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
@@ -44,21 +44,21 @@ func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsByArtistIdFailure")
 		http.Error(w, "Invalid ID Provided", http.StatusBadRequest)
 	}
 	songs, err := h.Dao.FindSongsByArtistId(id)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsByArtistIdFailure")
 		http.Error(w, "Song Not Found", http.StatusNotFound)
 	}
 	err = json.NewEncoder(w).Encode(songs)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsByArtistIdFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
@@ -77,21 +77,21 @@ func (h *Handler) getSongsByAlbumId(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsByAlbumIdFailure")
 		http.Error(w, "Invalid ID Provided", http.StatusBadRequest)
 	}
 	songs, err := h.Dao.FindSongsByArtistId(id)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsByAlbumIdFailure")
 		http.Error(w, "Song Not Found", http.StatusNotFound)
 	}
 	err = json.NewEncoder(w).Encode(songs)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetSongsByAlbumIdFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/Admiral-Piett/musizticle/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -13,19 +13,19 @@ func (h *Handler) serveSong(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("ServeSongFailure")
 		http.Error(w, "Invalid ID Provided", http.StatusBadRequest)
 	}
 	song, err := h.Dao.FindSongById(id)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("ServeSongFailure")
 		http.Error(w, "Song Not Found", http.StatusNotFound)
 	}
 	h.Logger.WithFields(logrus.Fields{
-		utils.LogFields.SongID: id,
+		models.LogFields.SongID: id,
 	}).Info("ServingSong")
 	http.ServeFile(w, r, song.FilePath)
 }

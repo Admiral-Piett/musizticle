@@ -3,7 +3,7 @@ package daos
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Admiral-Piett/musizticle/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 	"path/filepath"
@@ -16,16 +16,16 @@ type Dao struct {
 }
 
 var schemas = map[string]string{
-	utils.Tables.Albums:  AlbumnSchema,
-	utils.Tables.Artists: ArtistsSchema,
-	utils.Tables.Songs:   SongsSchema,
+	models.Tables.Albums:  AlbumnSchema,
+	models.Tables.Artists: ArtistsSchema,
+	models.Tables.Songs:   SongsSchema,
 }
 
 func InitializeDao() *Dao {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	os.Mkdir(fmt.Sprintf("%s/data", projectDirectory), 0755)
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, utils.SQLITE_DB))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, models.SQLITE_DB))
 	if err != nil {
 		panic(err)
 	}

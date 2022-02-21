@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/Admiral-Piett/musizticle/app"
 	"github.com/Admiral-Piett/musizticle/app/daos"
-	"github.com/Admiral-Piett/musizticle/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"io/fs"
 	"log"
 	"net/http"
@@ -26,8 +26,8 @@ func main() {
 
 	http.HandleFunc("/", app.ProxyHandler)
 
-	app.Logger.Info("App up and running on http://localhost:", utils.PORT)
-	err = http.ListenAndServe(fmt.Sprintf(":%s", utils.PORT), nil)
+	app.Logger.Info("App up and running on http://localhost:", models.PORT)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", models.PORT), nil)
 	if err != nil {
 		log.Fatal(err)
 	}

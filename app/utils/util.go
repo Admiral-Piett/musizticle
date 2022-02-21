@@ -2,75 +2,13 @@ package utils
 
 import (
 	"fmt"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"io"
 
 	"github.com/dhowden/tag"
 	"github.com/tcolgate/mp3"
 )
 
-//TODO - environmentalize
-var PORT string = "9000"
-var SQLITE_DB string = "musizticle.db"
-
-//TODO - Use me
-var InvalidFileTypes = []string{
-	".DS_Store",
-	".7z",
-}
-
-// FIXME - there has to be a more elegant object for this
-type TablesStruct struct {
-	Albums  string
-	Artists string
-	Songs   string
-}
-
-var Tables = TablesStruct{
-	Albums:  "albums",
-	Artists: "artists",
-	Songs:   "songs",
-}
-
-type LogFieldStruct = struct {
-	AlbumId      string
-	ArtistId     string
-	ErrorMessage string
-	FilePath     string
-	SongID       string
-	RequestBody  string
-	Size         string
-	StackContext string
-}
-
-var LogFields = LogFieldStruct{
-	AlbumId:      "album_id",
-	ArtistId:     "artist_id",
-	ErrorMessage: "error_message",
-	FilePath:     "file_path",
-	SongID:       "song_id",
-	RequestBody:  "request_body",
-	Size:         "size",
-	StackContext: "stack_context",
-}
-
-type SongMeta struct {
-	Title        string
-	Album        string
-	Artist       string
-	AlbumnArtist string
-	Composer     string
-	Year         int
-	Genre        string
-	TrackNumber  int
-	TotalTracks  int
-	Disc         int
-	TotalDiscs   int
-	Picture      *tag.Picture
-	Lyrics       string
-	Comment      string
-	Format       tag.Format
-	Duration     int
-}
 
 func getTime(file io.ReadSeeker) (int, error) {
 	// FIXME - should I not add in extra?  I could get more exact I suppose?
@@ -95,18 +33,18 @@ func getTime(file io.ReadSeeker) (int, error) {
 	return int(t), nil
 }
 
-func GetSongMetadata(file io.ReadSeeker) (SongMeta, error) {
+func GetSongMetadata(file io.ReadSeeker) (models.SongMeta, error) {
 	track, err := tag.ReadFrom(file)
 	if err != nil {
-		return SongMeta{}, err
+		return models.SongMeta{}, err
 	}
 	trackNumber, totalTracks := track.Track()
 	discNumber, totalDiscs := track.Disc()
 	duration, err := getTime(file)
 	if err != nil {
-		return SongMeta{}, err
+		return models.SongMeta{}, err
 	}
-	song_meta := SongMeta{
+	song_meta := models.SongMeta{
 		Title:        track.Title(),
 		Album:        track.Album(),
 		Artist:       track.Artist(),

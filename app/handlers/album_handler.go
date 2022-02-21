@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/Admiral-Piett/musizticle/app/daos"
-	"github.com/Admiral-Piett/musizticle/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -17,14 +17,14 @@ func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
 	songs, err := h.Dao.FetchAllAlbums()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetAlbumsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
 	err = json.NewEncoder(w).Encode(songs)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			utils.LogFields.ErrorMessage: err,
+			models.LogFields.ErrorMessage: err,
 		}).Error("GetAlbumsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}

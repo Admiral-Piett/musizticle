@@ -3,7 +3,7 @@ package daos
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Admiral-Piett/musizticle/app/utils"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"regexp"
 	"strconv"
 )
@@ -105,7 +105,7 @@ func (d *Dao) FindSongsByAlbumId(id int) ([]ListSong, error) {
 	return songs, nil
 }
 
-func (d *Dao) FindOrCreateSong(track utils.SongMeta, artistId int64, albumId int64, path string, duration int, findQuery string, insertQuery string) (int64, error) {
+func (d *Dao) FindOrCreateSong(track models.SongMeta, artistId int64, albumId int64, path string, duration int, findQuery string, insertQuery string) (int64, error) {
 	originalName, cleanedName := santizeString(track.Title)
 
 	id := int64(-1)
