@@ -19,13 +19,14 @@ var schemas = map[string]string{
 	models.Tables.Albums:  AlbumnSchema,
 	models.Tables.Artists: ArtistsSchema,
 	models.Tables.Songs:   SongsSchema,
+	models.Tables.Users:   UsersSchema,
 }
 
 func InitializeDao() *Dao {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	os.Mkdir(fmt.Sprintf("%s/data", projectDirectory), 0755)
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, models.SQLITE_DB))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, models.SETTINGS.SqliteDB))
 	if err != nil {
 		panic(err)
 	}

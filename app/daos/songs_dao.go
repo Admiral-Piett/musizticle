@@ -8,38 +8,22 @@ import (
 	"strconv"
 )
 
-type ListSong struct {
-	Id          int
-	Title       string
-	ArtistId    int
-	ArtistName  string
-	AlbumId     int
-	AlbumName   string
-	TrackNumber int
-	PlayCount   int
-	FilePath    string
-	Duration 	int
-	//FIXME - wtf, these are strings??
-	CreatedAt      string
-	LastModifiedAt string
-}
-
-func scanSong(rows *sql.Rows, r *ListSong, set_names bool) error {
+func scanSong(rows *sql.Rows, r *models.ListSong, set_names bool) error {
 	if !set_names {
 		return rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.Duration, &r.CreatedAt, &r.LastModifiedAt)
 	}
 	return rows.Scan(&r.Id, &r.Title, &r.ArtistId, &r.AlbumId, &r.TrackNumber, &r.PlayCount, &r.FilePath, &r.Duration, &r.CreatedAt, &r.LastModifiedAt, &r.ArtistName, &r.AlbumName)
 }
 
-func (d *Dao) FetchAllSongs() ([]ListSong, error) {
-	songs := []ListSong{}
+func (d *Dao) GetAllSongs() ([]models.ListSong, error) {
+	songs := []models.ListSong{}
 	rows, err := d.DBConn.Query(QueryAllSongs)
 	if err != nil {
 		return songs, err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		r := ListSong{}
+		r := models.ListSong{}
 		err = scanSong(rows, &r, true)
 		if err != nil {
 			return songs, err
@@ -50,32 +34,32 @@ func (d *Dao) FetchAllSongs() ([]ListSong, error) {
 	return songs, nil
 }
 
-func (d *Dao) FindSongById(id int) (ListSong, error) {
+func (d *Dao) FindSongById(id int) (models.ListSong, error) {
 	query := fmt.Sprintf(QuerySongById, id)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
-		return ListSong{}, err
+		return models.ListSong{}, err
 	}
 	defer rows.Close()
-	r := ListSong{}
+	r := models.ListSong{}
 	if rows.Next() {
 		err = scanSong(rows, &r, false)
 		if err != nil {
-			return ListSong{}, err
+			return models.ListSong{}, err
 		}
 	}
 	return r, nil
 }
 
-func (d *Dao) FindSongsByArtistId(id int) ([]ListSong, error) {
-	songs := []ListSong{}
+func (d *Dao) FindSongsByArtistId(id int) ([]models.ListSong, error) {
+	songs := []models.ListSong{}
 	query := fmt.Sprintf(QuerySongsByArtistId, id)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
 		return songs, err
 	}
 	defer rows.Close()
-	r := ListSong{}
+	r := models.ListSong{}
 	for rows.Next() {
 		err = scanSong(rows, &r, false)
 		if err != nil {
@@ -86,15 +70,15 @@ func (d *Dao) FindSongsByArtistId(id int) ([]ListSong, error) {
 	return songs, nil
 }
 
-func (d *Dao) FindSongsByAlbumId(id int) ([]ListSong, error) {
-	songs := []ListSong{}
+func (d *Dao) FindSongsByAlbumId(id int) ([]models.ListSong, error) {
+	songs := []models.ListSong{}
 	query := fmt.Sprintf(QuerySongsByAlbumId, id)
 	rows, err := d.DBConn.Query(query)
 	if err != nil {
 		return songs, err
 	}
 	defer rows.Close()
-	r := ListSong{}
+	r := models.ListSong{}
 	for rows.Next() {
 		err = scanSong(rows, &r, false)
 		if err != nil {

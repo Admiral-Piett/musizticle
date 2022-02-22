@@ -1,10 +1,19 @@
 package models
 
-import "github.com/dhowden/tag"
+import (
+	"crypto/rsa"
+	"github.com/dhowden/tag"
+)
 
-//TODO - environmentalize
-var PORT string = "9000"
-var SQLITE_DB string = "musizticle.db"
+var Settings struct {
+	Port string
+	SqliteDB string
+	PublicKey *rsa.PublicKey
+	PrivateKey *rsa.PrivateKey
+	TokenExpiration int
+}
+
+var SETTINGS = Settings
 
 //TODO - Use me
 var InvalidFileTypes = []string{
@@ -12,9 +21,9 @@ var InvalidFileTypes = []string{
 	".7z",
 }
 
-type Credentials struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+type ErrorResponse struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
 
 // FIXME - there has to be a more elegant object for this
@@ -22,12 +31,14 @@ type TablesStruct struct {
 	Albums  string
 	Artists string
 	Songs   string
+	Users   string
 }
 
 var Tables = TablesStruct{
 	Albums:  "albums",
 	Artists: "artists",
 	Songs:   "songs",
+	Users:   "users",
 }
 
 type LogFieldStruct = struct {
@@ -50,6 +61,59 @@ var LogFields = LogFieldStruct{
 	RequestBody:  "request_body",
 	Size:         "size",
 	StackContext: "stack_context",
+}
+
+// ----- User
+
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type User struct {
+	Id             int
+	Username       string
+	Password       string
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+type JwtToken struct {
+	UserId []byte `json:"userId"`
+	CreatedAt []byte `json:"createdAt"`
+	ExpiresAt []byte `json:"expiresAt"`
+}
+
+// ----- Media
+
+type Artist struct {
+	Id             int
+	Name           string
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+type Album struct {
+	Id             int
+	Name           string
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+type ListSong struct {
+	Id          int
+	Title       string
+	ArtistId    int
+	ArtistName  string
+	AlbumId     int
+	AlbumName   string
+	TrackNumber int
+	PlayCount   int
+	FilePath    string
+	Duration    int
+	//FIXME - wtf, these are strings??
+	CreatedAt      string
+	LastModifiedAt string
 }
 
 type SongMeta struct {

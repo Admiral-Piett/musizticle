@@ -11,7 +11,7 @@ import (
 
 func (h *Handler) getSongs(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetSongsStart")
-	songs, err := h.Dao.FetchAllSongs()
+	songs, err := h.Dao.GetAllSongs()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
 			models.LogFields.ErrorMessage: err,

@@ -60,3 +60,13 @@ var SongsSchema = `
 		FOREIGN KEY(artistId) REFERENCES artists(id)
 	)
 `
+
+var UsersSchema = `
+	CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY,
+		username TEXT,
+		password TEXT,
+		createdAt INTEGER,
+		lastModifiedAt INTEGER
+	)
+`

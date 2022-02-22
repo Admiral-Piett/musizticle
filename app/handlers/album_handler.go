@@ -14,7 +14,7 @@ type AlbumsHandler struct {
 
 func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetAlbumsStart")
-	songs, err := h.Dao.FetchAllAlbums()
+	songs, err := h.Dao.GetAllAlbums()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
 			models.LogFields.ErrorMessage: err,

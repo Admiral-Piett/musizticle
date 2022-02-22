@@ -1,11 +1,14 @@
 package app
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"github.com/Admiral-Piett/musizticle/app/daos"
 	"github.com/Admiral-Piett/musizticle/app/handlers"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-	"io/fs"
+	"gitlab.com/avarf/getenvs"
 	"net/http"
 	"os"
 )
@@ -14,17 +17,16 @@ type App struct {
 	Router   *mux.Router
 	Handler  *handlers.Handler
 	Logger   *logrus.Logger
-	FrontEnd *fs.FS
 }
 
-func New(dao *daos.Dao, distFS fs.FS) *App {
+func New(dao *daos.Dao) *App {
 	logger := logrus.New()
 	if os.Getenv("LOG_LEVEL") == "DEBUG" {
 		logger.SetLevel(logrus.DebugLevel)
 	} else {
 		logger.SetLevel(logrus.InfoLevel)
 	}
-	logger.WithFields(logrus.Fields{"it's an": "log!"}).Info("Starting Sound Control App...")
+	logger.WithFields(logrus.Fields{"it's a": "log!"}).Info("Starting Sound Control App...")
 
 	appHandler := handlers.InitializeHandlers(dao, logger)
 
@@ -32,14 +34,13 @@ func New(dao *daos.Dao, distFS fs.FS) *App {
 		Logger:   logger,
 		Router:   mux.NewRouter(),
 		Handler:  appHandler,
-		FrontEnd: &distFS,
 	}
 	a.initRoutes()
 	return a
 }
 
 func (a *App) initRoutes() {
-	a.Router.Handle("/", http.FileServer(http.FS(*a.FrontEnd))).Methods("GET")
+	a.Router.HandleFunc("/", a.Handler.Index()).Methods("GET")
 
 	a.Router.HandleFunc("/api/auth", a.Handler.Auth).Methods("POST")
 	a.Router.HandleFunc("/api/reauth", a.Handler.ReAuth).Methods("POST")
@@ -76,4 +77,18 @@ func (a *App) ProxyHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	a.Router.ServeHTTP(w, req)
+}
+
+func InitializeSettings() {
+	// TODO: explore viper package
+	models.SETTINGS.Port = getenvs.GetEnvString("MUSIZTICLE_PORT", "9000")
+	models.SETTINGS.SqliteDB = getenvs.GetEnvString("MUSIZTICLE_SQLITE_DB", "musizticle.db")
+	models.SETTINGS.TokenExpiration, _ = getenvs.GetEnvInt("MUSIZTICLE_TOKEN_EXPIRATION", 1)
+
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		panic(err)
+	}
+	models.SETTINGS.PrivateKey = privateKey
+	models.SETTINGS.PublicKey = &privateKey.PublicKey
 }

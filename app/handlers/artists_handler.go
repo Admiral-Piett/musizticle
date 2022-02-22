@@ -36,7 +36,7 @@ func (h *Handler) postArtists(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) getArtists(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetArtistsStart")
-	songs, err := h.Dao.FetchAllArtists()
+	songs, err := h.Dao.GetAllArtists()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
 			models.LogFields.ErrorMessage: err,
