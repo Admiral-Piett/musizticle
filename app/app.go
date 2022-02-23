@@ -84,6 +84,7 @@ func InitializeSettings() {
 	models.SETTINGS.Port = getenvs.GetEnvString("MUSIZTICLE_PORT", "9000")
 	models.SETTINGS.SqliteDB = getenvs.GetEnvString("MUSIZTICLE_SQLITE_DB", "musizticle.db")
 	models.SETTINGS.TokenExpiration, _ = getenvs.GetEnvInt("MUSIZTICLE_TOKEN_EXPIRATION", 1)
+	models.SETTINGS.TokenKey = []byte(getenvs.GetEnvString("MUSIZTICLE_TOKEN_KEY", "placeholder"))
 
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {

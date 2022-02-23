@@ -2,7 +2,10 @@ package models
 
 import (
 	"crypto/rsa"
+	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/dhowden/tag"
+	"time"
 )
 
 var Settings struct {
@@ -11,6 +14,7 @@ var Settings struct {
 	PublicKey *rsa.PublicKey
 	PrivateKey *rsa.PrivateKey
 	TokenExpiration int
+	TokenKey []byte
 }
 
 var SETTINGS = Settings
@@ -24,6 +28,12 @@ var InvalidFileTypes = []string{
 type ErrorResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
+}
+
+type AuthResponse struct {
+	AuthToken string `json:"authToken"`
+	ReauthToken string `json:"reauthToken"`
+	ExpirationTime string `json:"expirationTime"`
 }
 
 // FIXME - there has to be a more elegant object for this
@@ -80,8 +90,8 @@ type User struct {
 
 type JwtToken struct {
 	UserId []byte `json:"userId"`
-	CreatedAt []byte `json:"createdAt"`
-	ExpiresAt []byte `json:"expiresAt"`
+	StandardClaims jwt.StandardClaims `json:"claims"`
+}
 }
 
 // ----- Media
