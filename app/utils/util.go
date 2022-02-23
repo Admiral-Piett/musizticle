@@ -1,9 +1,14 @@
 package utils
 
 import (
+	"crypto"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
 	"fmt"
 	"github.com/Admiral-Piett/musizticle/app/models"
 	"io"
+	"strconv"
 
 	"github.com/dhowden/tag"
 	"github.com/tcolgate/mp3"
@@ -64,3 +69,26 @@ func GetSongMetadata(file io.ReadSeeker) (models.SongMeta, error) {
 	}
 	return song_meta, nil
 }
+
+func Encrypt(value int) ([]byte, error) {
+	encryptedBytes, err := rsa.EncryptOAEP(
+		sha256.New(),
+		rand.Reader,
+		models.SETTINGS.PublicKey,
+		[]byte(strconv.Itoa(value)),
+		nil)
+	if err != nil {
+		return []byte{}, err
+	}
+	return encryptedBytes, nil
+}
+
+func Decrypt(value []byte) (int, error) {
+	decryptedBytes, err := models.SETTINGS.PrivateKey.Decrypt(nil, value, &rsa.OAEPOptions{Hash: crypto.SHA256})
+	if err != nil {
+		return 0, err
+	}
+	s, _ := strconv.Atoi(string(decryptedBytes))
+	return s, nil
+}
+

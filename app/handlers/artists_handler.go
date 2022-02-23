@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -16,14 +15,14 @@ func (h *Handler) postArtists(w http.ResponseWriter, r *http.Request) {
 	req := Artist{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			models.LogFields.ErrorMessage: err,
+			LogFields.ErrorMessage: err,
 		}).Error("PostArtistFailure")
 		http.Error(w, "Invalid Request", http.StatusBadRequest)
 		return
 	}
 	if req.Name == "" {
 		h.Logger.WithFields(logrus.Fields{
-			models.LogFields.RequestBody: req,
+			LogFields.RequestBody: req,
 		}).Error("PostArtistFailure - Invalid Title Field")
 		http.Error(w, "Invalid Request", http.StatusBadRequest)
 		return
@@ -39,14 +38,14 @@ func (h *Handler) getArtists(w http.ResponseWriter, r *http.Request) {
 	songs, err := h.Dao.GetAllArtists()
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			models.LogFields.ErrorMessage: err,
+			LogFields.ErrorMessage: err,
 		}).Error("GetArtistsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
 	err = json.NewEncoder(w).Encode(songs)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			models.LogFields.ErrorMessage: err,
+			LogFields.ErrorMessage: err,
 		}).Error("GetArtistsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}

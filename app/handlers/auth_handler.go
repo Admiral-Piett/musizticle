@@ -1,40 +1,55 @@
 package handlers
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/sha256"
 	"encoding/json"
 	"github.com/Admiral-Piett/musizticle/app/models"
+	"github.com/Admiral-Piett/musizticle/app/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 	"time"
 )
-
-
-
-var errorResponse = models.ErrorResponse{Code: "UNAUTHORIZED", Message: "Unauthorized"}
-
-
 
 func VerifyTokenWrapper(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("PostAuthStart")
+	w.Header().Set("Content-Type", "application/json")
+	var creds = models.Credentials{}
 
-func encrypt(value int) ([]byte, error){
-	encryptedBytes, err := rsa.EncryptOAEP(
-		sha256.New(),
-		rand.Reader,
-		models.SETTINGS.PublicKey,
-		[]byte(strconv.Itoa(value)),
-		nil)
+	err := json.NewDecoder(r.Body).Decode(&creds)
 	if err != nil {
-		return []byte{}, err
+		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
+		return
 	}
-	return encryptedBytes, nil
+
+	user, err := h.Dao.GetUser(creds.Username, creds.Password)
+	if err != nil {
+		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
+		return
+	}
+
+	response, err := generateAuthToken(user)
+	if err != nil {
+		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
+		return
+	}
+	err = json.NewEncoder(w).Encode(response)
+	h.Logger.Info("PostAuthComplete")
+}
+
+func (h *Handler) ReAuth(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("PostReAuthStart")
+	w.Header().Set("Content-Type", "application/json")
+	h.Logger.Info("PostReAuthComplete")
 }
 
 func generateAuthToken(user models.User) (models.AuthResponse, error) {
@@ -42,12 +57,12 @@ func generateAuthToken(user models.User) (models.AuthResponse, error) {
 	now := time.Now()
 	expirationTime := now.Add(time.Duration(models.SETTINGS.TokenExpiration) * time.Minute)
 
-	encryptedId, err := encrypt(user.Id)
+	encryptedId, err := utils.Encrypt(user.Id)
 	if err != nil {
 		return response, err
 	}
 
-	tokenFields := models.JwtToken{
+	tokenFields := utils.JwtToken{
 		UserId: encryptedId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
@@ -66,42 +81,4 @@ func generateAuthToken(user models.User) (models.AuthResponse, error) {
 	response.ExpirationTime = string(expirationString)
 
 	return response, err
-}
-
-func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
-	h.Logger.Info("PostAuthStart")
-	w.Header().Set("Content-Type", "application/json")
-	var creds = models.Credentials{}
-
-	err := json.NewDecoder(r.Body).Decode(&creds)
-	if err != nil {
-		h.Logger.WithFields(logrus.Fields{models.LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(errorResponse)
-		return
-	}
-
-	user, err := h.Dao.GetUser(creds.Username, creds.Password)
-	if err != nil {
-		h.Logger.WithFields(logrus.Fields{models.LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(errorResponse)
-		return
-	}
-
-	response, err := generateAuthToken(user)
-	if err != nil {
-		h.Logger.WithFields(logrus.Fields{models.LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(errorResponse)
-		return
-	}
-	err = json.NewEncoder(w).Encode(response)
-	h.Logger.Info("PostAuthComplete")
-}
-
-func (h *Handler) ReAuth(w http.ResponseWriter, r *http.Request) {
-	h.Logger.Info("PostReAuthStart")
-	w.Header().Set("Content-Type", "application/json")
-	h.Logger.Info("PostReAuthComplete")
 }

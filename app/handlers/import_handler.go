@@ -3,13 +3,18 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/Admiral-Piett/musizticle/app/daos"
-	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/Admiral-Piett/musizticle/app/utils"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"path/filepath"
 )
+
+//TODO - Use me
+var InvalidFileTypes = []string{
+	".DS_Store",
+	".7z",
+}
 
 type ImportRequest struct {
 	ImportDir string `json:"importDirectory"`
@@ -27,9 +32,9 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil || request.ImportDir == "" {
 		h.Logger.WithFields(logrus.Fields{
-			models.LogFields.RequestBody:  r,
-			models.LogFields.StackContext: "songImport",
-			models.LogFields.ErrorMessage: err,
+			LogFields.RequestBody:  r,
+			LogFields.StackContext: "songImport",
+			LogFields.ErrorMessage: err,
 		}).Error("InvalidSongImportRequest")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Invalid Request Format"))
@@ -37,12 +42,12 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	go func() {
-		h.Logger.WithField(models.LogFields.RequestBody, request).Info("SongImportStart")
+		h.Logger.WithField(LogFields.RequestBody, request).Info("SongImportStart")
 		err = filepath.Walk(request.ImportDir, h.importSong)
 		if err != nil {
 			h.Logger.Error(err)
 		}
-		h.Logger.WithField(models.LogFields.RequestBody, request).Info("SongImportComplete")
+		h.Logger.WithField(LogFields.RequestBody, request).Info("SongImportComplete")
 	}()
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Song Import Started"))
@@ -72,8 +77,8 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 	track, err := utils.GetSongMetadata(file)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
-			models.LogFields.ErrorMessage: err,
-			models.LogFields.FilePath:     path,
+			LogFields.ErrorMessage: err,
+			LogFields.FilePath:     path,
 		}).Error("FailureToOpenFile - Skipping")
 		return nil
 	}
@@ -93,18 +98,18 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		return nil
 	}
 	h.Logger.WithFields(logrus.Fields{
-		models.LogFields.FilePath: path,
-		models.LogFields.SongID:   songId,
-		models.LogFields.AlbumId:  albumId,
-		models.LogFields.ArtistId: artistId,
-		models.LogFields.Size:     info.Size(),
+		LogFields.FilePath: path,
+		LogFields.SongID:   songId,
+		LogFields.AlbumId:  albumId,
+		LogFields.ArtistId: artistId,
+		LogFields.Size:     info.Size(),
 	}).Debug("SongAdded")
 	return nil
 }
 
 func checkError(message string, file string, err error, logger *logrus.Logger) {
 	logger.WithFields(logrus.Fields{
-		models.LogFields.ErrorMessage: err,
-		models.LogFields.FilePath:     file,
+		LogFields.ErrorMessage: err,
+		LogFields.FilePath:     file,
 	}).Error("%s - Skipping", message)
 }

@@ -2,10 +2,7 @@ package models
 
 import (
 	"crypto/rsa"
-	"errors"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/dhowden/tag"
-	"time"
 )
 
 var Settings struct {
@@ -19,12 +16,6 @@ var Settings struct {
 
 var SETTINGS = Settings
 
-//TODO - Use me
-var InvalidFileTypes = []string{
-	".DS_Store",
-	".7z",
-}
-
 type ErrorResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
@@ -36,19 +27,11 @@ type AuthResponse struct {
 	ExpirationTime string `json:"expirationTime"`
 }
 
-// FIXME - there has to be a more elegant object for this
 type TablesStruct struct {
 	Albums  string
 	Artists string
 	Songs   string
 	Users   string
-}
-
-var Tables = TablesStruct{
-	Albums:  "albums",
-	Artists: "artists",
-	Songs:   "songs",
-	Users:   "users",
 }
 
 type LogFieldStruct = struct {
@@ -60,17 +43,6 @@ type LogFieldStruct = struct {
 	RequestBody  string
 	Size         string
 	StackContext string
-}
-
-var LogFields = LogFieldStruct{
-	AlbumId:      "album_id",
-	ArtistId:     "artist_id",
-	ErrorMessage: "error_message",
-	FilePath:     "file_path",
-	SongID:       "song_id",
-	RequestBody:  "request_body",
-	Size:         "size",
-	StackContext: "stack_context",
 }
 
 // ----- User
@@ -86,12 +58,6 @@ type User struct {
 	Password       string
 	CreatedAt      string
 	LastModifiedAt string
-}
-
-type JwtToken struct {
-	UserId []byte `json:"userId"`
-	StandardClaims jwt.StandardClaims `json:"claims"`
-}
 }
 
 // ----- Media
@@ -144,3 +110,9 @@ type SongMeta struct {
 	Format       tag.Format
 	Duration     int
 }
+
+// ----- Canned Responses
+var UnauthorizedResponse = ErrorResponse{Code: "UNAUTHORIZED", Message: "Unauthorized"}
+
+
+
