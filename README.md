@@ -10,4 +10,4 @@ Set these in the environment before start up or be prepared to deal with the def
 - MUSIZTICLE_PORT
 - MUSIZTICLE_SQLITE_DB
 - MUSIZTICLE_TOKEN_EXPIRATION
-- MUSIZTICLE_TOKEN_KEY
+- MUSIZTICLE_TOKEN_KEY_LENGTH

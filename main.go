@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/Admiral-Piett/musizticle/app"
-	"github.com/Admiral-Piett/musizticle/app/daos"
 	"github.com/Admiral-Piett/musizticle/app/models"
 	"log"
 	"net/http"
@@ -11,15 +10,12 @@ import (
 
 
 func main() {
-	app.InitializeSettings()
+	musizticle := app.New()
+	defer musizticle.Handler.Dao.CloseDao()
 
-	appDaos := daos.InitializeDao()
-	defer appDaos.CloseDao()
-	app := app.New(appDaos)
+	http.HandleFunc("/", musizticle.ProxyHandler)
 
-	http.HandleFunc("/", app.ProxyHandler)
-
-	app.Logger.Info("App up and running on http://localhost:", models.SETTINGS.Port)
+	musizticle.Logger.Info("App up and running on http://localhost:", models.SETTINGS.Port)
 	err := http.ListenAndServe(fmt.Sprintf(":%s", models.SETTINGS.Port), nil)
 	if err != nil {
 		log.Fatal(err)
