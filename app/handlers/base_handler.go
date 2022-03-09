@@ -66,9 +66,7 @@ func (h *Handler) validateHeader(w http.ResponseWriter, r *http.Request) error {
 
 	//TODO - Send decrypted user id into handlers.
 	// Set a user context for the scope of the request if possible?  Storing the user id.
-
-
-	fmt.Println(s)
+	// Use Paul's example :D - https://gocodecloud.com/blog/2016/11/15/simple-golang-http-request-context-example/
 	fmt.Println(token)
 
 	return nil
@@ -78,6 +76,13 @@ func (h *Handler) validateHeader(w http.ResponseWriter, r *http.Request) error {
 func (h *Handler) Albums() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+
+		// FIXME: can I make a wrapper out of this?
+		err := h.validateHeader(w, r)
+		if err != nil {
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			return
+		}
 		switch r.Method {
 		case "GET":
 			h.getAlbums(w, r)
@@ -91,7 +96,6 @@ func (h *Handler) Artists() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		// TODO - put in between almost all requests
 		err := h.validateHeader(w, r)
 		if err != nil {
 			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
@@ -109,6 +113,11 @@ func (h *Handler) Artists() http.HandlerFunc {
 
 func (h *Handler) ServeSong() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		err := h.validateHeader(w, r)
+		if err != nil {
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			return
+		}
 		switch r.Method {
 		case "GET":
 			h.serveSong(w, r)
@@ -121,11 +130,67 @@ func (h *Handler) ServeSong() http.HandlerFunc {
 func (h *Handler) Songs() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+
+		err := h.validateHeader(w, r)
+		if err != nil {
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			return
+		}
 		switch r.Method {
 		case "GET":
 			h.getSongs(w, r)
 		case "POST":
 			h.postSongs(w, r)
 		}
+	}
+}
+
+func (h *Handler) SongsByArtist() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		err := h.validateHeader(w, r)
+		if err != nil {
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			return
+		}
+		switch r.Method {
+		case "GET":
+			h.getSongsByArtistId(w, r)
+		case "POST":
+			http.Error(w, "NOT_FOUND", http.StatusNotFound)
+			return
+		}
+	}
+}
+
+func (h *Handler) SongsByAlbum() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		err := h.validateHeader(w, r)
+		if err != nil {
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			return
+		}
+		switch r.Method {
+		case "GET":
+			h.getSongsByAlbumId(w, r)
+		case "POST":
+			http.Error(w, "NOT_FOUND", http.StatusNotFound)
+			return
+		}
+	}
+}
+
+func (h *Handler) Import() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := h.validateHeader(w, r)
+		if err != nil {
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			return
+		}
+
+		h.songImport(w, r)
 	}
 }

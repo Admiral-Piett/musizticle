@@ -31,12 +31,6 @@ func (h *Handler) postSongs(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *Handler) GetSongsByArtist() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		h.getSongsByArtistId(w, r)
-	}
-}
-
 func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetSongsByArtistsIdStart")
 	params := mux.Vars(r)

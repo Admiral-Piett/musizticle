@@ -20,12 +20,6 @@ type ImportRequest struct {
 	ImportDir string `json:"importDirectory"`
 }
 
-func (h *Handler) Import() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		h.songImport(w, r)
-	}
-}
-
 func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("SongImportStart")
 	request := ImportRequest{}

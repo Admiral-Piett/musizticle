@@ -45,7 +45,7 @@ func New() *App {
 }
 
 func (a *App) initRoutes() {
-	a.Router.HandleFunc("/", a.Handler.Index()).Methods("GET")
+	a.Router.HandleFunc("/api", a.Handler.Index()).Methods("GET")
 
 	a.Router.HandleFunc("/api/auth", a.Handler.Auth).Methods("POST")
 	a.Router.HandleFunc("/api/reauth", a.Handler.ReAuth).Methods("POST")
@@ -54,8 +54,8 @@ func (a *App) initRoutes() {
 	a.Router.HandleFunc("/api/artists", a.Handler.Artists()).Methods("GET", "POST")
 	a.Router.HandleFunc("/api/songs/{id:[0-9]+}", a.Handler.ServeSong()).Methods("GET")
 	a.Router.HandleFunc("/api/songs", a.Handler.Songs()).Methods("GET", "POST")
-	a.Router.HandleFunc("/api/songs/artists/{id:[0-9]+}", a.Handler.GetSongsByArtist()).Methods("GET")
-	a.Router.HandleFunc("/api/songs/albums/{id:[0-9]+}", a.Handler.GetSongsByArtist()).Methods("GET")
+	a.Router.HandleFunc("/api/songs/artists/{id:[0-9]+}", a.Handler.SongsByArtist()).Methods("GET")
+	a.Router.HandleFunc("/api/songs/albums/{id:[0-9]+}", a.Handler.SongsByAlbum()).Methods("GET")
 
 	//a.Router.HandleFunc("/api/search/songs/{name:[0-9]+}", a.Handler.Songs()).Methods("GET", "POST")
 
