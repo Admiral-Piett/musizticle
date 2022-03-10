@@ -1,33 +1,37 @@
 package models
 
-import "github.com/dhowden/tag"
+import (
+	"crypto/rsa"
+	"github.com/dhowden/tag"
+)
 
-//TODO - environmentalize
-var PORT string = "9000"
-var SQLITE_DB string = "musizticle.db"
-
-//TODO - Use me
-var InvalidFileTypes = []string{
-	".DS_Store",
-	".7z",
+var Settings struct {
+	Port string
+	SqliteDB string
+	PublicKey *rsa.PublicKey
+	PrivateKey *rsa.PrivateKey
+	TokenExpiration int
+	TokenKey []byte
 }
 
-type Credentials struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+var SETTINGS = Settings
+
+type ErrorResponse struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
 
-// FIXME - there has to be a more elegant object for this
+type AuthResponse struct {
+	AuthToken string `json:"authToken"`
+	ReauthToken string `json:"reauthToken"`
+	ExpirationTime string `json:"expirationTime"`
+}
+
 type TablesStruct struct {
 	Albums  string
 	Artists string
 	Songs   string
-}
-
-var Tables = TablesStruct{
-	Albums:  "albums",
-	Artists: "artists",
-	Songs:   "songs",
+	Users   string
 }
 
 type LogFieldStruct = struct {
@@ -41,15 +45,51 @@ type LogFieldStruct = struct {
 	StackContext string
 }
 
-var LogFields = LogFieldStruct{
-	AlbumId:      "album_id",
-	ArtistId:     "artist_id",
-	ErrorMessage: "error_message",
-	FilePath:     "file_path",
-	SongID:       "song_id",
-	RequestBody:  "request_body",
-	Size:         "size",
-	StackContext: "stack_context",
+// ----- User
+
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type User struct {
+	Id             int
+	Username       string
+	Password       string
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+// ----- Media
+
+type Artist struct {
+	Id             int
+	Name           string
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+type Album struct {
+	Id             int
+	Name           string
+	CreatedAt      string
+	LastModifiedAt string
+}
+
+type ListSong struct {
+	Id          int
+	Title       string
+	ArtistId    int
+	ArtistName  string
+	AlbumId     int
+	AlbumName   string
+	TrackNumber int
+	PlayCount   int
+	FilePath    string
+	Duration    int
+	//FIXME - these are strings??
+	CreatedAt      string
+	LastModifiedAt string
 }
 
 type SongMeta struct {
@@ -70,3 +110,9 @@ type SongMeta struct {
 	Format       tag.Format
 	Duration     int
 }
+
+// ----- Canned Responses
+var UnauthorizedResponse = ErrorResponse{Code: "UNAUTHORIZED", Message: "Unauthorized"}
+
+
+

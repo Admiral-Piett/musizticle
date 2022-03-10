@@ -81,3 +81,12 @@ WHERE name LIKE "%%%s%%"
 AND artistId = %d
 AND albumId = %d
 `
+
+var QueryUserByUsername = `
+SELECT
+       *
+FROM
+	 users
+WHERE username = "%s" 
+AND password = "%s"
+`

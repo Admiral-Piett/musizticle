@@ -11,21 +11,38 @@ import (
 	"strings"
 )
 
+
+var Tables = models.TablesStruct{
+	Albums:  "albums",
+	Artists: "artists",
+	Songs:   "songs",
+	Users:   "users",
+}
+
+var nonSearchableStrings = map[string]bool{
+	"the":        true,
+	"a":          true,
+	"ost":        true,
+	"soundtrack": true,
+	"score":      true,
+}
+
 type Dao struct {
 	DBConn *sql.DB
 }
 
 var schemas = map[string]string{
-	models.Tables.Albums:  AlbumnSchema,
-	models.Tables.Artists: ArtistsSchema,
-	models.Tables.Songs:   SongsSchema,
+	Tables.Albums:  AlbumnSchema,
+	Tables.Artists: ArtistsSchema,
+	Tables.Songs:   SongsSchema,
+	Tables.Users:   UsersSchema,
 }
 
 func InitializeDao() *Dao {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	os.Mkdir(fmt.Sprintf("%s/data", projectDirectory), 0755)
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, models.SQLITE_DB))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, models.SETTINGS.SqliteDB))
 	if err != nil {
 		panic(err)
 	}
@@ -119,14 +136,6 @@ func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery stri
 		id, err = r.LastInsertId()
 	}
 	return id, nil
-}
-
-var nonSearchableStrings = map[string]bool{
-	"the":        true,
-	"a":          true,
-	"ost":        true,
-	"soundtrack": true,
-	"score":      true,
 }
 
 func santizeString(originalValue string) (string, string) {
