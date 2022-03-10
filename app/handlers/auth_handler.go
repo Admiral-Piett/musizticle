@@ -46,12 +46,6 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("PostAuthComplete")
 }
 
-func (h *Handler) ReAuth(w http.ResponseWriter, r *http.Request) {
-	h.Logger.Info("PostReAuthStart")
-	w.Header().Set("Content-Type", "application/json")
-	h.Logger.Info("PostReAuthComplete")
-}
-
 func generateAuthToken(user models.User) (models.AuthResponse, error) {
 	response := models.AuthResponse{}
 	now := time.Now()

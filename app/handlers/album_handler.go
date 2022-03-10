@@ -29,8 +29,3 @@ func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
 	}
 	h.Logger.Info("GetAlbumsComplete")
 }
-
-func (h *Handler) postAlbums(w http.ResponseWriter, r *http.Request) {
-	h.Logger.Info("PostAlbumsStart")
-	h.Logger.Info("PostAlbumsComplete")
-}

@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -23,11 +22,6 @@ func (t JwtToken) Valid() error {
 		return err
 	}
 
-	// If we can't decrypt the token then we know it's invalid, so stop.
-	_, err = Decrypt(t.UserId)
-	if err != nil {
-		return errors.New(fmt.Sprintf("TokenInvalid: %s", err))
-	}
 	return nil
 }
 

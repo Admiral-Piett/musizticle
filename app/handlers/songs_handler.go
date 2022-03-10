@@ -27,10 +27,6 @@ func (h *Handler) getSongs(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetSongsComplete")
 }
 
-func (h *Handler) postSongs(w http.ResponseWriter, r *http.Request) {
-
-}
-
 func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetSongsByArtistsIdStart")
 	params := mux.Vars(r)
@@ -56,12 +52,6 @@ func (h *Handler) getSongsByArtistId(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
 	h.Logger.Info("GetSongsByArtistsIdComplete")
-}
-
-func (h *Handler) GetSongsByAlbum() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		h.getSongsByArtistId(w, r)
-	}
 }
 
 func (h *Handler) getSongsByAlbumId(w http.ResponseWriter, r *http.Request) {
