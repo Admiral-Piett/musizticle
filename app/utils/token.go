@@ -10,8 +10,6 @@ type JwtToken struct {
 	StandardClaims jwt.StandardClaims `json:"claims"`
 }
 
-//TODO - HERE - I need to verify the token signature in here, or
-// at worst (and only for the moment) I have to do a DB look up on the decrypted user id.
 func (t JwtToken) Valid() error {
 	if t.StandardClaims.ExpiresAt == 0 || t.StandardClaims.NotBefore == 0 || t.StandardClaims.IssuedAt == 0 {
 		return errors.New("TokenInvalid: Missing field")

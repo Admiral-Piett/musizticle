@@ -87,7 +87,7 @@ type ListSong struct {
 	PlayCount   int
 	FilePath    string
 	Duration    int
-	//FIXME - wtf, these are strings??
+	//FIXME - these are strings??
 	CreatedAt      string
 	LastModifiedAt string
 }

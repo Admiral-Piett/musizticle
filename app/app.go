@@ -62,7 +62,7 @@ func (a *App) initRoutes() {
 }
 
 // --- CORS Proxy ---
-// FIXME - environmentalize (or part of the build process?)
+// FIXME - Update to allow only certain origins
 var CORS_ALLOW_HEADERS = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
 var CORS_ALLOW_METHODS = "POST, GET, OPTIONS, PUT, DELETE"
 var CORS_ALLOW_ORIGINS = "*"

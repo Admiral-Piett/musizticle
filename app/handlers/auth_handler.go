@@ -73,7 +73,6 @@ func generateAuthToken(user models.User) (models.AuthResponse, error) {
 	}
 
 	response.AuthToken = tokenString
-	// TODO - Add ReauthToken
 	expirationString, _ := expirationTime.UTC().MarshalText()
 	response.ExpirationTime = string(expirationString)
 

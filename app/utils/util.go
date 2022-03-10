@@ -16,7 +16,6 @@ import (
 
 
 func getTime(file io.ReadSeeker) (int, error) {
-	// FIXME - should I not add in extra?  I could get more exact I suppose?
 	t := 1.0
 
 	d := mp3.NewDecoder(file)
