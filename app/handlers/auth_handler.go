@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/Admiral-Piett/musizticle/app/utils"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"time"
