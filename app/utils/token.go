@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 type JwtToken struct {
