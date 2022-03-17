@@ -41,6 +41,7 @@ type LogFieldStruct = struct {
 	FilePath     string
 	SongID       string
 	RequestBody  string
+	RequestPath  string
 	Size         string
 	StackContext string
 }

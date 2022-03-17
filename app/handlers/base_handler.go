@@ -20,6 +20,7 @@ var LogFields = models.LogFieldStruct{
 	FilePath:     "file_path",
 	SongID:       "song_id",
 	RequestBody:  "request_body",
+	RequestPath:  "request_path",
 	Size:         "size",
 	StackContext: "stack_context",
 }
@@ -132,7 +133,8 @@ func (h *Handler) Songs() http.HandlerFunc {
 
 		ctx, err := h.validateHeader(w, r)
 		if err != nil {
-			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
+			// TODO - make a helper method for this, to always log the url and error
+			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err, LogFields.RequestPath: r.URL}).Error("Unauthorized")
 			return
 		}
 		switch r.Method {

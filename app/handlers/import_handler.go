@@ -44,7 +44,6 @@ func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 		h.Logger.WithField(LogFields.RequestBody, request).Info("SongImportComplete")
 	}()
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Song Import Started"))
 }
 
 func (h *Handler) importSong(path string, info os.FileInfo, err error) error {

@@ -20,7 +20,7 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	var creds = models.Credentials{}
 
 	err := json.NewDecoder(r.Body).Decode(&creds)
-	if err != nil {
+	if err != nil || (creds == models.Credentials{}) {
 		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
