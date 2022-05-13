@@ -1,0 +1,48 @@
+name: Go
+
+on:
+  push:
+    branches: [ main, go-build ]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Additional tag for build"
+        required: false
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18.1
+
+    - name: Build
+      run: go build -o musizticle-build
+
+    - name: test 1
+      run: pwd
+
+    - name: test 2
+      run: ls -lah
+
+    - name: test 3
+      run: echo ${{ github }}
+
+    # TODO - configure more
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        files: ./musizticle-build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # You don't need to add this in secrets it's by default.
+
+#    - name: Test
+#      run: go test -v ./...
