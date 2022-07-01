@@ -1,0 +1,39 @@
+FROM centos:centos7.9.2009
+#FROM dockercore/golang-cross
+#FROM golang:1.18.1
+
+# FIXME - this is complete garbage - figure out a better way to cross-compile
+RUN yum install -y wget && \
+    yum group install -y "Development Tools" && \
+    wget https://go.dev/dl/go1.18.2.linux-amd64.tar.gz && \
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go1.18.2.linux-amd64.tar.gz \
+
+RUN export PATH=$PATH:/usr/local/go/bin
+
+
+#RUN apt-get update -y
+#RUN apt-get install -y gcc-arm-linux-gnueabi
+
+#RUN yum install epel-release
+#RUN yum update -y
+#RUN yum install golang
+
+#ENV PATH=$PATH:/usr/local/go/bin
+#ENV GO111MODULE=on
+#
+#WORKDIR /src/musizticle
+#
+#COPY app/ ./app
+#COPY main.go ./
+#COPY go.mod ./
+#COPY go.sum ./
+#
+##RUN go get ./...
+#
+#
+##RUN CC=arm-linux-gnueabi-gcc CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 go build -o musizticle
+#RUN =go build -o musizticle
+#
+#EXPOSE 9000
+#
+#CMD [ "/musizticle" ]
