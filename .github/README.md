@@ -28,7 +28,16 @@ of containers.
   - Update to a different bash shell if you need to
 - OPTIONAL: copy `./update.sh`
 - Mount the directory of your music files to `./music` in the same directory as `runner.sh`
-- Run `./update.sh` and then `./runner.sh`
+- Run `./update.sh`
+- Add your user to the sqlite db (if it doesn't already exist start up the app)
+```shell
+cd data
+sqlite3 musizticle.db
+insert into users ("username", "password" ) values ("<your_username>", "<your_password>");
+.quit
+```
+- Run `./runner.sh`
+  - You may need to up the volume paths in here to match your implementation
 
 ```shell
 mkdir musizticle
