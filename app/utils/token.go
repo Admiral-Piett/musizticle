@@ -6,7 +6,7 @@ import (
 )
 
 type JwtToken struct {
-	UserId []byte `json:"userId"`
+	UserId         []byte             `json:"userId"`
 	StandardClaims jwt.StandardClaims `json:"claims"`
 }
 
@@ -22,4 +22,3 @@ func (t JwtToken) Valid() error {
 
 	return nil
 }
-

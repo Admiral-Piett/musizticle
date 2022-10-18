@@ -48,7 +48,7 @@ func (h *Handler) validateHeader(w http.ResponseWriter, r *http.Request) (contex
 	}
 	authArray := strings.Split(s, "Bearer")
 	// This should always be 2 exactly. If it isn't the request is malformed and that's just too bad.
-	if 2 != len(authArray){
+	if 2 != len(authArray) {
 		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: "Invalid `Authorization` header format"}).Error("ValidateHeaderError")
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
@@ -85,7 +85,6 @@ func (h *Handler) Albums() http.HandlerFunc {
 			h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("Unauthorized")
 			return
 		}
-		h.getAlbums(w, r.WithContext(ctx))
 		switch r.Method {
 		case "GET":
 			h.getAlbums(w, r.WithContext(ctx))

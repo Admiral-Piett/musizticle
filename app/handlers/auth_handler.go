@@ -61,10 +61,9 @@ func generateAuthToken(user models.User) (models.AuthResponse, error) {
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 			NotBefore: now.Unix(),
-			IssuedAt: now.Unix(),
+			IssuedAt:  now.Unix(),
 		},
 	}
-
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenFields)
 	tokenString, err := token.SignedString(models.SETTINGS.TokenKey)

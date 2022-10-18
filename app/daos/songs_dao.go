@@ -70,6 +70,7 @@ func (d *Dao) FindSongsByArtistId(id int) ([]models.ListSong, error) {
 	return songs, nil
 }
 
+// FIXME - Currently unused
 func (d *Dao) FindSongsByAlbumId(id int) ([]models.ListSong, error) {
 	songs := []models.ListSong{}
 	query := fmt.Sprintf(QuerySongsByAlbumId, id)

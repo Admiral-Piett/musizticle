@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 func main() {
 	musizticle := app.New()
 	defer musizticle.Handler.Dao.CloseDao()

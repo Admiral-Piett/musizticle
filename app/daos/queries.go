@@ -51,6 +51,7 @@ INSERT INTO
 	values("%s", %d, %d, %d, %d, "%s", %d)
 `
 
+// TODO - Support LEFT joins here?
 var QueryAllSongs = `
 SELECT s.*,
        a.name,
@@ -65,7 +66,7 @@ SELECT * FROM songs WHERE id = %d
 `
 
 var QuerySongsByAlbumId = `
-SELECT * FROM songs WHERE artistId = %d
+SELECT * FROM songs WHERE albumId = %d
 `
 
 var QuerySongsByArtistId = `
@@ -89,4 +90,11 @@ FROM
 	 users
 WHERE username = "%s" 
 AND password = "%s"
+`
+
+// FIXME - Not used except in tests
+var InsertUsers = `
+INSERT INTO 
+	users(username, password)
+	values("%s", "%s")
 `

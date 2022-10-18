@@ -11,7 +11,6 @@ import (
 	"strings"
 )
 
-
 var Tables = models.TablesStruct{
 	Albums:  "albums",
 	Artists: "artists",
@@ -42,7 +41,7 @@ func InitializeDao() *Dao {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	os.Mkdir(fmt.Sprintf("%s/data", projectDirectory), 0755)
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s/data/%s", projectDirectory, models.SETTINGS.SqliteDB))
+	db, err := sql.Open(models.SETTINGS.SqliteDriver, fmt.Sprintf("%s/data/%s", projectDirectory, models.SETTINGS.SqliteDB))
 	if err != nil {
 		panic(err)
 	}
@@ -113,10 +112,10 @@ func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery stri
 	id := int64(-1)
 	query := fmt.Sprintf(findQuery, cleanedName)
 	rows, err := d.DBConn.Query(query)
-	defer rows.Close()
 	if err != nil {
 		return id, err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		//TODO - need to deal with prioritizing matches
 		err = rows.Scan(&id)
@@ -150,6 +149,7 @@ func santizeString(originalValue string) (string, string) {
 	if nonSearchableStrings[strings.ToLower(s[len(s)-1])] {
 		s = s[:len(s)-1]
 	}
+	//TODO - make this more strict on invalid characters
 	//Strip out invalid values from both the originalValue and the cleaned one, as both will interact with the database.
 	cleaned := []string{}
 	for _, v := range s {

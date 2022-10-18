@@ -6,12 +6,13 @@ import (
 )
 
 var Settings struct {
-	Port string
-	SqliteDB string
-	PublicKey *rsa.PublicKey
-	PrivateKey *rsa.PrivateKey
+	Port            string
+	SqliteDB        string
+	SqliteDriver    string
+	PublicKey       *rsa.PublicKey
+	PrivateKey      *rsa.PrivateKey
 	TokenExpiration int
-	TokenKey []byte
+	TokenKey        []byte
 }
 
 var SETTINGS = Settings
@@ -22,8 +23,8 @@ type ErrorResponse struct {
 }
 
 type AuthResponse struct {
-	AuthToken string `json:"authToken"`
-	ReauthToken string `json:"reauthToken"`
+	AuthToken      string `json:"authToken"`
+	ReauthToken    string `json:"reauthToken"`
 	ExpirationTime string `json:"expirationTime"`
 }
 
@@ -114,6 +115,3 @@ type SongMeta struct {
 
 // ----- Canned Responses
 var UnauthorizedResponse = ErrorResponse{Code: "UNAUTHORIZED", Message: "Unauthorized"}
-
-
-

@@ -14,7 +14,6 @@ import (
 	"github.com/tcolgate/mp3"
 )
 
-
 func getTime(file io.ReadSeeker) (int, error) {
 	t := 1.0
 
@@ -81,7 +80,7 @@ func GenerateRandomString(length int) string {
 		panic(err)
 	}
 	l := len(random_chars)
-	for i, v := range(b) {
+	for i, v := range b {
 		// Get the value of the random 8 bit int modulo the max index of the random_chars.  This way we'll use the
 		//random int to indicate a value from this list, and cap the possible values at the last index.
 		m := int(v) % l
@@ -111,4 +110,3 @@ func Decrypt(value []byte) (int, error) {
 	s, _ := strconv.Atoi(string(decryptedBytes))
 	return s, nil
 }
-

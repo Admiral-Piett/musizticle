@@ -15,9 +15,9 @@ import (
 )
 
 type App struct {
-	Router   *mux.Router
-	Handler  *handlers.Handler
-	Logger   *logrus.Logger
+	Router  *mux.Router
+	Handler *handlers.Handler
+	Logger  *logrus.Logger
 }
 
 func New() *App {
@@ -36,9 +36,9 @@ func New() *App {
 	appHandler := handlers.InitializeHandlers(appDaos, logger)
 
 	a := &App{
-		Logger:   logger,
-		Router:   mux.NewRouter(),
-		Handler:  appHandler,
+		Logger:  logger,
+		Router:  mux.NewRouter(),
+		Handler: appHandler,
 	}
 	a.initRoutes()
 	return a
@@ -86,6 +86,7 @@ func (a *App) ProxyHandler(w http.ResponseWriter, req *http.Request) {
 func InitializeSettings(logger *logrus.Logger) {
 	models.SETTINGS.Port = getenvs.GetEnvString("MUSIZTICLE_PORT", "9000")
 	models.SETTINGS.SqliteDB = getenvs.GetEnvString("MUSIZTICLE_SQLITE_DB", "musizticle.db")
+	models.SETTINGS.SqliteDriver = getenvs.GetEnvString("MUSIZTICLE_SQLITE_DRIVER", "sqlite3")
 	models.SETTINGS.TokenExpiration, _ = getenvs.GetEnvInt("MUSIZTICLE_TOKEN_EXPIRATION", 1)
 
 	tokenKeyLength, _ := getenvs.GetEnvInt("MUSIZTICLE_TOKEN_KEY_LENGTH", 100)

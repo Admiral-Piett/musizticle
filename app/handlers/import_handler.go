@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Admiral-Piett/musizticle/app/daos"
 	"github.com/Admiral-Piett/musizticle/app/utils"
 	"github.com/sirupsen/logrus"
@@ -104,5 +105,5 @@ func checkError(message string, file string, err error, logger *logrus.Logger) {
 	logger.WithFields(logrus.Fields{
 		LogFields.ErrorMessage: err,
 		LogFields.FilePath:     file,
-	}).Error("%s - Skipping", message)
+	}).Error(fmt.Sprintf("%s - Skipping", message))
 }
