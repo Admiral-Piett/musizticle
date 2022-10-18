@@ -1,11 +1,16 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
+
+// Call to ServeFile swap
+var serveFile = http.ServeFile
 
 func (h *Handler) serveSong(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -26,5 +31,5 @@ func (h *Handler) serveSong(w http.ResponseWriter, r *http.Request) {
 	h.Logger.WithFields(logrus.Fields{
 		LogFields.SongID: id,
 	}).Info("ServingSong")
-	http.ServeFile(w, r, song.FilePath)
+	serveFile(w, r, fmt.Sprintf("%s%s", models.SETTINGS.LibraryPath, song.FilePath))
 }

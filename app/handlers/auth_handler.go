@@ -10,14 +10,19 @@ import (
 	"time"
 )
 
-func VerifyTokenWrapper(w http.ResponseWriter, r *http.Request) {
-
-}
+var tokenFunction = generateAuthToken
 
 func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("PostAuthStart")
 	w.Header().Set("Content-Type", "application/json")
 	var creds = models.Credentials{}
+
+	if r.Body == nil {
+		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: "Empty request body"}).Error("AuthRequestFailure")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
+		return
+	}
 
 	err := json.NewDecoder(r.Body).Decode(&creds)
 	if err != nil || (creds == models.Credentials{}) {
@@ -35,14 +40,20 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := generateAuthToken(user)
+	response, err := tokenFunction(user)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
 		return
 	}
-	err = json.NewEncoder(w).Encode(response)
+	err = EncodeResponse(w, response)
+	if err != nil {
+		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("AuthRequestFailure")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
+		return
+	}
 	h.Logger.Info("PostAuthComplete")
 }
 

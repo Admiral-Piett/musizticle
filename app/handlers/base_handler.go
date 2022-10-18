@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/Admiral-Piett/musizticle/app/daos"
+	"github.com/Admiral-Piett/musizticle/app/interfaces"
 	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/Admiral-Piett/musizticle/app/utils"
 	"github.com/golang-jwt/jwt"
@@ -24,19 +24,29 @@ var LogFields = models.LogFieldStruct{
 	Size:         "size",
 	StackContext: "stack_context",
 }
+var EncodeResponse = encodeResponse
 
 type Handler struct {
-	Dao    *daos.Dao
+	Dao    interfaces.AbstractDao
 	Logger *logrus.Logger
 }
 
-func InitializeHandlers(dao *daos.Dao, logger *logrus.Logger) *Handler {
-	//FIXME - Should maybe let the app method do this?
-	return &Handler{Dao: dao, Logger: logger}
-}
-
+// Override a specific method from the jwt library
 func tokenParsingReturn(token *jwt.Token) (interface{}, error) {
 	return models.SETTINGS.TokenKey, nil
+}
+
+func encodeResponse(w http.ResponseWriter, value interface{}) error {
+	err := json.NewEncoder(w).Encode(value)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func InitializeHandlers(dao interfaces.AbstractDao, logger *logrus.Logger) *Handler {
+	//FIXME - Should maybe let the app method do this?
+	return &Handler{Dao: dao, Logger: logger}
 }
 
 func (h *Handler) validateHeader(w http.ResponseWriter, r *http.Request) (context.Context, error) {
@@ -48,7 +58,7 @@ func (h *Handler) validateHeader(w http.ResponseWriter, r *http.Request) (contex
 	}
 	authArray := strings.Split(s, "Bearer")
 	// This should always be 2 exactly. If it isn't the request is malformed and that's just too bad.
-	if 2 != len(authArray) {
+	if 2 != len(authArray) || "" == authArray[1] {
 		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: "Invalid `Authorization` header format"}).Error("ValidateHeaderError")
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(models.UnauthorizedResponse)
@@ -68,6 +78,7 @@ func (h *Handler) validateHeader(w http.ResponseWriter, r *http.Request) (contex
 	// If we can't decrypt the token then we know it's invalid, so stop.
 	userId, err := utils.Decrypt(decodedToken.UserId)
 	if err != nil {
+		h.Logger.WithFields(logrus.Fields{LogFields.ErrorMessage: err}).Error("InvalidUserIdEncryption")
 		return r.Context(), err
 	}
 

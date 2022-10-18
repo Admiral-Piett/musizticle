@@ -1,6 +1,6 @@
 module github.com/Admiral-Piett/musizticle
 
-go 1.18
+go 1.19
 
 require (
 	github.com/dhowden/tag v0.0.0-20201120070457-d52dcb253c63
@@ -14,7 +14,6 @@ require (
 )
 
 require (
-	bou.ke/monkey v1.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/sys v0.0.0-20210601080250-7ecdf8ef093b // indirect

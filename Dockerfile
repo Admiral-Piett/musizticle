@@ -1,4 +1,4 @@
-FROM golang:1.18.1 as base
+FROM golang:1.19.3 as base
 
 WORKDIR "/opt/svc"
 
@@ -12,6 +12,8 @@ RUN go build -o musizticle
 # TODO - Figure out how to run off a smaller image
 #FROM scratch
 #COPY --from=base /opt/svc/musizticle ./
+
+# TODO - add test build
 
 ARG git_sha="local"
 ENV GIT_SHA=${git_sha}

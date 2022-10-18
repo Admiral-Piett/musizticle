@@ -6,6 +6,7 @@ import (
 )
 
 var Settings struct {
+	LibraryPath     string
 	Port            string
 	SqliteDB        string
 	SqliteDriver    string

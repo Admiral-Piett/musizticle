@@ -74,7 +74,8 @@ func setupCORS(w *http.ResponseWriter, req *http.Request) {
 }
 
 // Proxy Handler to deal with all incoming requests in main.go.  If the Method is OPTIONS, assume this is a pre-flight
-//  CORS check and return CORS headers here.
+//
+//	CORS check and return CORS headers here.
 func (a *App) ProxyHandler(w http.ResponseWriter, req *http.Request) {
 	setupCORS(&w, req)
 	if req.Method == "OPTIONS" {
@@ -88,6 +89,8 @@ func InitializeSettings(logger *logrus.Logger) {
 	models.SETTINGS.SqliteDB = getenvs.GetEnvString("MUSIZTICLE_SQLITE_DB", "musizticle.db")
 	models.SETTINGS.SqliteDriver = getenvs.GetEnvString("MUSIZTICLE_SQLITE_DRIVER", "sqlite3")
 	models.SETTINGS.TokenExpiration, _ = getenvs.GetEnvInt("MUSIZTICLE_TOKEN_EXPIRATION", 1)
+
+	models.SETTINGS.LibraryPath = getenvs.GetEnvString("LIBRARY_PATH", "/opt/svc/music")
 
 	tokenKeyLength, _ := getenvs.GetEnvInt("MUSIZTICLE_TOKEN_KEY_LENGTH", 100)
 	ts := utils.GenerateRandomString(tokenKeyLength)

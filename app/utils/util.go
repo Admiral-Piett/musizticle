@@ -14,6 +14,9 @@ import (
 	"github.com/tcolgate/mp3"
 )
 
+// TODO - low priority - these are all helper functions just to bottle up code that I don't want to see
+//  elsewhere.  We can test them at our leisure.
+
 func getTime(file io.ReadSeeker) (int, error) {
 	t := 1.0
 

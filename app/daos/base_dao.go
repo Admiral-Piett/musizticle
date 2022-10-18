@@ -106,7 +106,7 @@ func (d *Dao) CloseDao() {
 	}
 }
 
-func (d *Dao) FindOrCreateByName(name string, findQuery string, insertQuery string) (int64, error) {
+func (d *Dao) FindOrCreateByName(name, findQuery, insertQuery string) (int64, error) {
 	originalName, cleanedName := santizeString(name)
 
 	id := int64(-1)
