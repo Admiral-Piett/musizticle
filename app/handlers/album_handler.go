@@ -1,15 +1,9 @@
 package handlers
 
 import (
-	"encoding/json"
-	"github.com/Admiral-Piett/musizticle/app/daos"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
-
-type AlbumsHandler struct {
-	Dao *daos.Dao
-}
 
 func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("GetAlbumsStart")
@@ -20,7 +14,7 @@ func (h *Handler) getAlbums(w http.ResponseWriter, r *http.Request) {
 		}).Error("GetAlbumsFailure")
 		http.Error(w, "General Error", http.StatusInternalServerError)
 	}
-	err = json.NewEncoder(w).Encode(songs)
+	err = EncodeResponse(w, songs)
 	if err != nil {
 		h.Logger.WithFields(logrus.Fields{
 			LogFields.ErrorMessage: err,

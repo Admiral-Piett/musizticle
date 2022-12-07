@@ -1,56 +1,37 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/Admiral-Piett/musizticle/app/daos"
+	"github.com/Admiral-Piett/musizticle/app/models"
 	"github.com/Admiral-Piett/musizticle/app/utils"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-//TODO - Use me
+// TODO - Use me
 var InvalidFileTypes = []string{
 	".DS_Store",
 	".7z",
 }
 
-type ImportRequest struct {
-	ImportDir string `json:"importDirectory"`
-}
-
 func (h *Handler) songImport(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("SongImportStart")
-	request := ImportRequest{}
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil || request.ImportDir == "" {
-		h.Logger.WithFields(logrus.Fields{
-			LogFields.RequestBody:  r,
-			LogFields.StackContext: "songImport",
-			LogFields.ErrorMessage: err,
-		}).Error("InvalidSongImportRequest")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Invalid Request Format"))
-		return
-	}
 
 	go func() {
-		h.Logger.WithField(LogFields.RequestBody, request).Info("SongImportStart")
-		err = filepath.Walk(request.ImportDir, h.importSong)
+		err := filepath.Walk(models.SETTINGS.LibraryPath, h.importSong)
 		if err != nil {
 			h.Logger.Error(err)
 		}
-		h.Logger.WithField(LogFields.RequestBody, request).Info("SongImportComplete")
+		h.Logger.Info("SongImportComplete")
 	}()
 	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
-	if err != nil {
-		return err
-	}
 	file, err := os.Open(path)
 	if err != nil {
 		return err
@@ -86,7 +67,10 @@ func (h *Handler) importSong(path string, info os.FileInfo, err error) error {
 		checkError("FailureToFindOrAddAlbum", path, err, h.Logger)
 		return nil
 	}
-	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, path, track.Duration, daos.QuerySongIdByName, daos.InsertSongs)
+
+	p := strings.Split(path, models.SETTINGS.LibraryPath)
+	localPath := p[len(p)-1]
+	songId, err := h.Dao.FindOrCreateSong(track, artistId, albumId, localPath, track.Duration, daos.QuerySongIdByName, daos.InsertSongs)
 	if err != nil || songId == -1 {
 		checkError("FailureToFindOrAddSong", path, err, h.Logger)
 		return nil

@@ -105,9 +105,9 @@ func TestMain(m *testing.M) {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	dbPath := fmt.Sprintf("%s/data/%s", projectDirectory, models.SETTINGS.SqliteDB)
-	defer os.Remove(dbPath)
 
 	code := m.Run()
+	os.RemoveAll(dbPath)
 	os.Exit(code)
 }
 
@@ -172,24 +172,24 @@ func Test_InitializeDao_success_triggers(t *testing.T) {
 		expectedInfo []DatabaseTriggerInfo
 	}{
 		{[]DatabaseTriggerInfo{
-			{Type: "trigger", Name: "last_modified_at_update_trigger_albums", TblName: "albums"},
-			{Type: "trigger", Name: "last_modified_at_insert_trigger_albums", TblName: "albums"},
 			{Type: "trigger", Name: "created_at_insert_trigger_albums", TblName: "albums"},
-			{Type: "trigger", Name: "last_modified_at_update_trigger_artists", TblName: "artists"},
-			{Type: "trigger", Name: "last_modified_at_insert_trigger_artists", TblName: "artists"},
 			{Type: "trigger", Name: "created_at_insert_trigger_artists", TblName: "artists"},
-			{Type: "trigger", Name: "last_modified_at_update_trigger_songs", TblName: "songs"},
-			{Type: "trigger", Name: "last_modified_at_insert_trigger_songs", TblName: "songs"},
 			{Type: "trigger", Name: "created_at_insert_trigger_songs", TblName: "songs"},
-			{Type: "trigger", Name: "last_modified_at_update_trigger_users", TblName: "users"},
-			{Type: "trigger", Name: "last_modified_at_insert_trigger_users", TblName: "users"},
 			{Type: "trigger", Name: "created_at_insert_trigger_users", TblName: "users"},
+			{Type: "trigger", Name: "last_modified_at_insert_trigger_albums", TblName: "albums"},
+			{Type: "trigger", Name: "last_modified_at_insert_trigger_artists", TblName: "artists"},
+			{Type: "trigger", Name: "last_modified_at_insert_trigger_songs", TblName: "songs"},
+			{Type: "trigger", Name: "last_modified_at_insert_trigger_users", TblName: "users"},
+			{Type: "trigger", Name: "last_modified_at_update_trigger_albums", TblName: "albums"},
+			{Type: "trigger", Name: "last_modified_at_update_trigger_artists", TblName: "artists"},
+			{Type: "trigger", Name: "last_modified_at_update_trigger_songs", TblName: "songs"},
+			{Type: "trigger", Name: "last_modified_at_update_trigger_users", TblName: "users"},
 		}},
 	}
 	for _, test := range tests {
 		// I don't care about all the values in here, this table stores the raw sql and everything else.  I don't
 		//  need to assert that I can write SQL and it works - that's a smoke test's job.
-		results, err := dao.DBConn.Query("select type, name, tbl_name from sqlite_master where type = 'trigger';")
+		results, err := dao.DBConn.Query("select type, name, tbl_name from sqlite_master where type = 'trigger' ORDER BY name;")
 
 		index := 0
 		for results.Next() {
@@ -209,7 +209,7 @@ func Test_InitializeDao_can_not_open_db_panic(t *testing.T) {
 	_, file, _, _ := runtime.Caller(0)
 	projectDirectory := filepath.Join(filepath.Dir(file), "../..")
 	dbPath := fmt.Sprintf("%s/data/%s", projectDirectory, models.SETTINGS.SqliteDB)
-	defer os.Remove(dbPath)
+	defer os.RemoveAll(dbPath)
 
 	assert.Panics(t, func() {
 		InitializeDao()
